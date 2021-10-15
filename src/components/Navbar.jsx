@@ -63,7 +63,7 @@ const Navbar = () => {
         <div>
             <StyledNavbar fixed="top" expand="lg">
                 <Container fluid>
-                    <StyledNavbar.Brand href="#">
+                    <StyledNavbar.Brand href="/">
                         <img
                             src={logo}
                             width="90"
@@ -79,20 +79,20 @@ const Navbar = () => {
                             style={{ maxHeight: "200px" }}
                             navbarScroll
                         >
-                            <StyledNavLink href="#action1">
+                            <StyledNavLink href="/products/Woman">
                                 Wanita
                             </StyledNavLink>
-                            <StyledNavLink href="#action2">Pria</StyledNavLink>
+                            <StyledNavLink href="/products/Man">Pria</StyledNavLink>
                             <StyledNavLink href="#action3">About</StyledNavLink>
                             <StyledNavLink
                                 className="d-lg-none d-sm-inline-block"
-                                href="#action1"
+                                href="/login"
                             >
                                 Masuk
                             </StyledNavLink>
                             <StyledNavLink
                                 className="d-lg-none d-sm-inline-block"
-                                href="#action2"
+                                href="/register"
                             >
                                 Daftar
                             </StyledNavLink>
@@ -111,13 +111,13 @@ const Navbar = () => {
                         <Nav>
                             <StyledNavLink
                                 className="d-none d-lg-inline-block"
-                                href="#action1"
+                                href="/login"
                             >
                                 Masuk
                             </StyledNavLink>
                             <StyledNavLink
                                 className="d-none d-lg-inline-block"
-                                href="#action2"
+                                href="/register"
                             >
                                 Daftar
                             </StyledNavLink>

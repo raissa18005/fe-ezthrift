@@ -5,6 +5,7 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const ProductContainer = styled.div`
     flex: 1;
@@ -109,7 +110,9 @@ const Product = ({ item }) => {
                         <ShoppingCartOutlined />
                     </Icon>
                     <Icon>
+                    <Link to={`/product/${item._id}`}>
                         <SearchOutlined />
+                        </Link>
                     </Icon>
                     <Icon>
                         <FavoriteBorder />
@@ -119,11 +122,11 @@ const Product = ({ item }) => {
             <ProductInfo>
                 <ProductInfoContainer>
                     <ProductInfoWrap>
-                        <ProductGender>F/M</ProductGender>
-                        <ProductSize>XL</ProductSize>
+                        <ProductGender>{item.categories[1]}</ProductGender>
+                        <ProductSize>{item.size}</ProductSize>
                     </ProductInfoWrap>
-                    <ProductName>Uniqlo T-shirt</ProductName>
-                    <ProductPrice>Rp. 50.000</ProductPrice>
+                    <ProductName>{item.title}</ProductName>
+                    <ProductPrice>Rp. {item.price}</ProductPrice>
                 </ProductInfoContainer>
             </ProductInfo>
         </ProductContainer>

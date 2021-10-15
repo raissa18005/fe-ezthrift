@@ -1,10 +1,13 @@
 import { Add, Remove } from "@material-ui/icons";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
+import { publicRequest } from "../requestMethods";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -113,6 +116,20 @@ const CheckoutButton = styled.button`
 `;
 
 const Product = () => {
+    const location = useLocation();
+  const id = location.pathname.split("/")[2];
+  const [product, setProduct] = useState({});
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/products/find/" + id);
+        setProduct(res.data);
+      } catch {}
+    };
+    getProduct();
+  }, [id]);
+  
     return (
         <Container>
             <Navbar />
@@ -121,18 +138,17 @@ const Product = () => {
                     <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
                 </ImgContainer>
                 <InfoContainer>
-                    <Title>T-shirt Katun Uniqlo Crew Neck </Title>
+                    <Title>{product.title} </Title>
                     <Desc>
-                        T-shirt pria dari bahan 100% Supima® cotton yang halus
-                        dan berkilau.
+                    {product.desc}
                     </Desc>
-                    <Price>Rp. 20.000</Price>
+                    <Price>RP. {product.price}</Price>
                     <FilterContainer>
                         <Filter>
-                            <FilterTitle>Gender : Pria/Wanita</FilterTitle>
+                            <FilterTitle>Gender : {product.categories}</FilterTitle>
                         </Filter>
                         <Filter>
-                            <FilterTitle>Ukuran : M</FilterTitle>
+                            <FilterTitle>Ukuran : {product.size}</FilterTitle>
                         </Filter>
                     </FilterContainer>
                     <AddContainer>
