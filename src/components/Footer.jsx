@@ -12,6 +12,8 @@ import styled from "styled-components";
 
 const Container = styled.div`
     display: flex;
+    background-color: #3d405b;
+    color: white;
 `;
 const Left = styled.div`
     flex: 1;
@@ -79,10 +81,11 @@ const Footer = () => {
             <Left>
                 <Logo>EzThrift</Logo>
                 <Desc>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Asperiores sequi eos alias ex et laboriosam rem, sapiente
-                    non fugiat ratione perferendis earum eligendi molestias
-                    repellat tempora architecto totam quis iusto!
+                    EzThrift adalah aplikasi yang menyediakan tempat untuk
+                    membeli pakaian khususnya dalam bidang thrifting dengan
+                    harga miring serta menjual pakaian-pakaian tidak terpakai
+                    serta bergerak dalam bidang sosial dengan membuka donasi
+                    pakaian untuk orang-orang yang membutuhkan{" "}
                 </Desc>
                 <SocialContainer>
                     <SocialIcon color="385999">
@@ -94,9 +97,6 @@ const Footer = () => {
                     <SocialIcon color="55ACEE">
                         <Twitter />
                     </SocialIcon>
-                    <SocialIcon color="E60023">
-                        <Pinterest />
-                    </SocialIcon>
                 </SocialContainer>
             </Left>
             <Center>
@@ -106,27 +106,23 @@ const Footer = () => {
                     <ListItem>Cart</ListItem>
                     <ListItem>Man Fashion</ListItem>
                     <ListItem>Woman Fashion</ListItem>
-                    <ListItem>Accessories</ListItem>
-                    <ListItem>My Account</ListItem>
-                    <ListItem>Order Ttracking</ListItem>
-                    <ListItem>Wishlist</ListItem>
-                    <ListItem>Wishlist</ListItem>
-                    <ListItem>Terms</ListItem>
+                    <ListItem>About us</ListItem>
+                    <ListItem>Help</ListItem>
                 </List>
             </Center>
             <Right>
                 <Title>Contact</Title>
                 <ContactItem>
                     <Room style={{ marginRight: "10px" }} />
-                    622 Dixie Path, South Tobinchester 9228
+                    Bandung, Indonesia
                 </ContactItem>
                 <ContactItem>
                     <Phone style={{ marginRight: "10px" }} />
-                    +1 234 56 78
+                    +62 81231721
                 </ContactItem>
                 <ContactItem>
                     <MailOutline style={{ marginRight: "10px" }} />
-                    contact@lama.dev
+                    ezthrift@gmail.com
                 </ContactItem>
                 <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" />
             </Right>

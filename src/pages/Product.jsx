@@ -103,13 +103,12 @@ const Button = styled.button`
 `;
 const CheckoutButton = styled.button`
     padding: 15px 40px;
-    border: 2px solid teal;
     font-weight: 500;
-    background-color: white;
+    background-color: #e07a5f;
     cursor: pointer;
 
     &:hover {
-        background-color: #f8f4f4;
+        background-color: #c96549;
     }
 `;
 
@@ -142,7 +141,6 @@ const Product = () => {
                     </AddContainer>
                 </InfoContainer>
             </Wrapper>
-            <Newsletter />
             <Footer />
         </Container>
     );

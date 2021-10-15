@@ -9,8 +9,8 @@ const Container = styled.div`
     height: 100vh;
 `;
 const LoginWrapper = styled.div`
-    height: 100vh;
     background-color: white;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,8 +28,7 @@ const Image = styled.img`
 `;
 const Right = styled.div`
     flex: 2;
-    height: 100vh;
-
+    margin: 20px 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -80,6 +79,10 @@ const Button = styled.button`
     cursor: pointer;
     margin: 10px 0;
     border-radius: 50px;
+
+    &:hover {
+        background-color: #6f9985;
+    }
 `;
 
 const FormText = styled.p`

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import login from "../assets/images/login-img.svg";
+import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 
@@ -80,6 +81,10 @@ const Button = styled.button`
     cursor: pointer;
     margin: 30px 0;
     border-radius: 50px;
+
+    &:hover {
+        background-color: #6f9985;
+    }
 `;
 
 const FormText = styled.p`
