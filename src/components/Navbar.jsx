@@ -12,6 +12,8 @@ import {
     Form,
     FormControl,
     Button,
+    DropdownButton as Drpdb,
+    Dropdown,
     Container,
 } from "react-bootstrap";
 import styled from "styled-components";
@@ -21,6 +23,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../redux/userRedux";
 
+const DropdownButton = styled(Drpdb)`
+    background-color: aliceblue;
+    color: black;
+`;
 const StyledNavbar = styled(NavbarBS)`
     background-color: white;
     z-index: 999;
@@ -181,6 +187,7 @@ const Navbar = () => {
                                             </NavDropdown.Item>
                                         </NavDropdown>
                                     </MenuItem>
+
                                     <StyledNavLink>
                                         <MenuItem>
                                             <Badge
@@ -191,6 +198,33 @@ const Navbar = () => {
                                             </Badge>
                                         </MenuItem>
                                     </StyledNavLink>
+
+                                    <MenuItem>
+                                        <NavDropdown
+                                            align="end"
+                                            style={{}}
+                                            title={
+                                                <Person
+                                                    style={{ color: "primary" }}
+                                                />
+                                            }
+                                            id="navbarScrollingDropdown"
+                                        >
+                                            <NavDropdown.Item href="#action3">
+                                                Action
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item href="#action4">
+                                                Another action
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Divider />
+                                            <NavDropdown.Item
+                                                href="/"
+                                                onClick={handleLogout}
+                                            >
+                                                Logout
+                                            </NavDropdown.Item>
+                                        </NavDropdown>
+                                    </MenuItem>
                                 </>
                             )}
                         </Nav>

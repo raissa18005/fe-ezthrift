@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import Footer from "../components/Footer";
-import Nav from "../components/Nav";
+import Navbar from "../components/Navbar";
 import sarah from "../assets/images/sarah.jpg";
 import tyok from "../assets/images/tyok.jpg";
 import raissa from "../assets/images/raissa.jpg";
 
 const Container = styled.div`
-    margin-top: 60px;
+    margin-top: 59px;
 `;
 const Wrapper = styled.div`
     display: flex;
@@ -75,7 +75,7 @@ const TeamPos = styled.div``;
 const AboutUs = () => {
     return (
         <Container>
-            <Nav />
+            <Navbar />
             <Wrapper>
                 <About>
                     <AboutTitle>About EzThrift</AboutTitle>
