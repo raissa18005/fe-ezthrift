@@ -17,6 +17,9 @@ import {
 import styled from "styled-components";
 import logo from "../assets/images/Logo.svg";
 import { Badge } from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { logout } from "../redux/userRedux";
 
 const StyledNavbar = styled(NavbarBS)`
     background-color: white;
@@ -50,7 +53,6 @@ const LoginMenu = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-around;
-    display: none;
 `;
 
 const MenuItem = styled.div`
@@ -59,11 +61,20 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
+    const quantity = useSelector((state) => state.cart.quantity);
+    const user = useSelector((state) => state.user.currentUser);
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        // Update cart
+        dispatch(logout());
+    };
+
     return (
         <div>
             <StyledNavbar fixed="top" expand="lg">
-                <Container fluid>
-                    <StyledNavbar.Brand href="#">
+                <Container fluid style={{ padding: " 0 20px" }}>
+                    <StyledNavbar.Brand href="/">
                         <img
                             src={logo}
                             width="90"
@@ -79,11 +90,13 @@ const Navbar = () => {
                             style={{ maxHeight: "200px" }}
                             navbarScroll
                         >
-                            <StyledNavLink href="#action1">
+                            <StyledNavLink href="/products/wanita">
                                 Wanita
                             </StyledNavLink>
-                            <StyledNavLink href="#action2">Pria</StyledNavLink>
-                            <StyledNavLink href="#action3">About</StyledNavLink>
+                            <StyledNavLink href="/products/pria">
+                                Pria
+                            </StyledNavLink>
+                            <StyledNavLink href="/about">About</StyledNavLink>
                             <StyledNavLink
                                 className="d-lg-none d-sm-inline-block"
                                 href="#action1"
@@ -109,49 +122,80 @@ const Navbar = () => {
                             <Input></Input>
                         </SearchContainer>
                         <Nav>
-                            <StyledNavLink
-                                className="d-none d-lg-inline-block"
-                                href="#action1"
-                            >
-                                Masuk
-                            </StyledNavLink>
-                            <StyledNavLink
-                                className="d-none d-lg-inline-block"
-                                href="#action2"
-                            >
-                                Daftar
-                            </StyledNavLink>
+                            {!user ? (
+                                <>
+                                    <StyledNavLink
+                                        style={{ color: "#E07A5F" }}
+                                        className="d-none d-lg-inline-block"
+                                        href="/login"
+                                    >
+                                        Masuk
+                                    </StyledNavLink>
+                                    <StyledNavLink
+                                        style={{ color: "#E07A5F" }}
+                                        className="d-none d-lg-inline-block"
+                                        href="/register"
+                                    >
+                                        Daftar
+                                    </StyledNavLink>
+                                </>
+                            ) : (
+                                <>
+                                    <StyledNavLink>
+                                        <Link
+                                            to="/cart"
+                                            style={{ color: "gray" }}
+                                        >
+                                            <MenuItem>
+                                                <Badge
+                                                    badgeContent={quantity}
+                                                    color="primary"
+                                                >
+                                                    <ShoppingCartOutlined />
+                                                </Badge>
+                                            </MenuItem>
+                                        </Link>
+                                    </StyledNavLink>
+                                    <MenuItem>
+                                        <NavDropdown
+                                            style={{ width: "60px" }}
+                                            title={
+                                                <Person
+                                                    style={{ color: "primary" }}
+                                                />
+                                            }
+                                            id="navbarScrollingDropdown"
+                                        >
+                                            <NavDropdown.Item href="#action3">
+                                                Action
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item href="#action4">
+                                                Another action
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Divider />
+                                            <NavDropdown.Item
+                                                href="/"
+                                                onClick={handleLogout}
+                                            >
+                                                Logout
+                                            </NavDropdown.Item>
+                                        </NavDropdown>
+                                    </MenuItem>
+                                    <StyledNavLink>
+                                        <MenuItem>
+                                            <Badge
+                                                badgeContent={4}
+                                                color="primary"
+                                            >
+                                                <Notifications />
+                                            </Badge>
+                                        </MenuItem>
+                                    </StyledNavLink>
+                                </>
+                            )}
                         </Nav>
                     </StyledNavbar.Collapse>
-                    <LoginMenu>
-                        <MenuItem>
-                            <Badge badgeContent={4} color="gray">
-                                <ShoppingCartOutlined />
-                            </Badge>
-                        </MenuItem>
-                        <MenuItem>
-                            <Badge badgeContent={4} color="gray">
-                                <Notifications />
-                            </Badge>
-                        </MenuItem>
-                        <MenuItem>
-                            <NavDropdown
-                                title={<Person style={{ color: "gray" }} />}
-                                id="navbarScrollingDropdown"
-                            >
-                                <NavDropdown.Item href="#action3">
-                                    Action
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="#action4">
-                                    Another action
-                                </NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action5">
-                                    Something else here
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                        </MenuItem>
-                    </LoginMenu>
+                    <LoginMenu></LoginMenu>
                 </Container>
             </StyledNavbar>
         </div>

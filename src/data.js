@@ -2,8 +2,8 @@ export const sliderItems = [
     {
         id: 1,
         img: "https://images.unsplash.com/photo-1538329972958-465d6d2144ed?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzB8fGZhc2hpb258ZW58MHwwfDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=60",
-        title: "SUMMER SALE",
-        desc: "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
+        title: "WELCOME TO EZTHRIFT",
+        desc: "SEGERA BELI BARANG TERKINI KAMI! .",
         bg: "f5fafd",
     },
     {
@@ -25,20 +25,20 @@ export const sliderItems = [
 export const categories = [
     {
         id: 1,
-        img: "https://images.pexels.com/photos/5886041/pexels-photo-5886041.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        img: "https://images.unsplash.com/photo-1617365564485-d2786503d6ae?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=392&q=80",
         title: "SHIRT STYLE!",
         cat: "woman",
     },
     {
         id: 2,
-        img: "https://images.pexels.com/photos/2983464/pexels-photo-2983464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-        title: "LOUNGEWEAR LOVE",
+        img: "https://images.unsplash.com/photo-1600717535275-0b18ede2f7fc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=464&q=80",
+        title: "CELANA TRENDY!",
         cat: "coat",
     },
     {
         id: 3,
-        img: "https://images.pexels.com/photos/5480696/pexels-photo-5480696.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
-        title: "LIGHT JACKETS",
+        img: "https://images.unsplash.com/photo-1553728437-e15abbe95e6b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+        title: "JAKET/HOODIE",
         cat: "jeans",
     },
 ];

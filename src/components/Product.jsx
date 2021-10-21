@@ -3,8 +3,10 @@ import {
     SearchOutlined,
     ShoppingCartOutlined,
 } from "@material-ui/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+import NumberFormat from "react-number-format";
 
 const ProductContainer = styled.div`
     flex: 1;
@@ -109,7 +111,12 @@ const Product = ({ item }) => {
                         <ShoppingCartOutlined />
                     </Icon>
                     <Icon>
-                        <SearchOutlined />
+                        <Link
+                            to={`/product/${item._id}`}
+                            style={{ color: "black" }}
+                        >
+                            <SearchOutlined />
+                        </Link>
                     </Icon>
                     <Icon>
                         <FavoriteBorder />
@@ -119,11 +126,18 @@ const Product = ({ item }) => {
             <ProductInfo>
                 <ProductInfoContainer>
                     <ProductInfoWrap>
-                        <ProductGender>F/M</ProductGender>
-                        <ProductSize>XL</ProductSize>
+                        <ProductGender>{item.categories[1]}</ProductGender>
+                        <ProductSize>{item.size}</ProductSize>
                     </ProductInfoWrap>
-                    <ProductName>Uniqlo T-shirt</ProductName>
-                    <ProductPrice>Rp. 50.000</ProductPrice>
+                    <ProductName>{item.title}</ProductName>
+                    <ProductPrice>
+                        <NumberFormat
+                            value={item.price}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            prefix={"Rp"}
+                        />
+                    </ProductPrice>
                 </ProductInfoContainer>
             </ProductInfo>
         </ProductContainer>

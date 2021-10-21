@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import register from "../assets/images/register-img.svg";
+import registerImage from "../assets/images/register-img.svg";
 import Navbar from "../components/Navbar";
+import { register } from "../redux/apiCalls";
 import { mobile } from "../responsive";
 
 const Container = styled.div`
@@ -99,26 +101,51 @@ const Link = styled.a`
 `;
 
 const Register = () => {
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
+    const { isFetching, error } = useSelector((state) => state.user);
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        register(dispatch, { username, email, password });
+    };
+
     return (
         <Container>
             <Navbar />
             <LoginWrapper>
                 <Left>
-                    <Image src={register} />
+                    <Image src={registerImage} />
                 </Left>
                 <Right>
                     <Wrapper>
                         <Title>REGISTER</Title>
                         <Form>
-                            <Label>Nama Lengkap</Label>
-                            <Input placeholder="Nama Lengkap" type="text" />
-                            <Label>Nomor Telepon</Label>
-                            <Input placeholder="Nomor Telepon" type="text" />
+                            {/* <Label>Nama Lengkap</Label>
+                            <Input placeholder="Nama Lengkap" type="text" onChange={(e) => setName(e.target.value)}/> */}
+                            <Label>Username</Label>
+                            <Input
+                                placeholder="Username"
+                                type="text"
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                            {/* <Label>Nomor Telepon</Label>
+                            <Input placeholder="Nomor Telepon" type="text" onChange={(e) => setPhone(e.target.value)}/> */}
                             <Label>E-mail</Label>
-                            <Input placeholder="E-mail" type="text" />
+                            <Input
+                                placeholder="E-mail"
+                                type="text"
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
                             <Label>Password</Label>
-                            <Input placeholder="Password" type="password" />
-                            <Button>REGISTER</Button>
+                            <Input
+                                placeholder="Password"
+                                type="password"
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <Button onClick={handleClick}>REGISTER</Button>
                             <FormText>SUDAH MEMPUNYAI AKUN?</FormText>
                             <Link>LOGIN</Link>
                         </Form>

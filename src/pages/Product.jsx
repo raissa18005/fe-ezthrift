@@ -1,10 +1,12 @@
-import { Add, Remove } from "@material-ui/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import Newsletter from "../components/Newsletter";
+import { useLocation } from "react-router";
+import { publicRequest } from "../requestMethods";
+import NumberFormat from "react-number-format";
+import { addProduct } from "../redux/cartRedux";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -31,6 +33,7 @@ const Title = styled.h1`
 `;
 const Desc = styled.p`
     margin: 20px 0px;
+    font-size: 18px;
 `;
 const Price = styled.span`
     font-weight: 100;
@@ -113,30 +116,60 @@ const CheckoutButton = styled.button`
 `;
 
 const Product = () => {
+    const location = useLocation();
+    const id = location.pathname.split("/")[2];
+    const [quantity, setQuantity] = useState(1);
+    const dispatch = useDispatch();
+
+    const [product, setProduct] = useState({});
+
+    useEffect(() => {
+        const getProduct = async () => {
+            try {
+                const res = await publicRequest.get("/products/find/" + id);
+                setProduct(res.data);
+            } catch (err) {}
+        };
+        getProduct();
+    }, [id]);
+
+    const handleClick = () => {
+        // Update cart
+        dispatch(addProduct({ ...product, quantity }));
+    };
+
     return (
         <Container>
             <Navbar />
             <Wrapper>
                 <ImgContainer>
-                    <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
+                    <Image src={product.img} />
                 </ImgContainer>
                 <InfoContainer>
-                    <Title>T-shirt Katun Uniqlo Crew Neck </Title>
-                    <Desc>
-                        T-shirt pria dari bahan 100% Supima® cotton yang halus
-                        dan berkilau.
-                    </Desc>
-                    <Price>Rp. 20.000</Price>
+                    <Title>{product.title} </Title>
+                    <Desc>{product.desc}</Desc>
+                    <Price>
+                        <NumberFormat
+                            value={product.price}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            prefix={"Rp"}
+                        />
+                    </Price>
                     <FilterContainer>
                         <Filter>
-                            <FilterTitle>Gender : Pria/Wanita</FilterTitle>
+                            <FilterTitle>
+                                Gender : {product.categories}
+                            </FilterTitle>
                         </Filter>
                         <Filter>
-                            <FilterTitle>Ukuran : M</FilterTitle>
+                            <FilterTitle>Ukuran : {product.size}</FilterTitle>
                         </Filter>
                     </FilterContainer>
                     <AddContainer>
-                        <Button>TAMBAH KE KERANJANG</Button>
+                        <Button onClick={handleClick}>
+                            TAMBAH KE KERANJANG
+                        </Button>
                         <CheckoutButton>CHECKOUT</CheckoutButton>
                     </AddContainer>
                 </InfoContainer>

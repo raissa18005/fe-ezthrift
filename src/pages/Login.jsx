@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import login from "../assets/images/login-img.svg";
+import { login } from "../redux/apiCalls";
+import loginImage from "../assets/images/login-img.svg";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
+import { useDispatch, useSelector } from "react-redux";
 
 const Container = styled.div`
     width: 100vw;
@@ -85,6 +87,11 @@ const Button = styled.button`
     &:hover {
         background-color: #6f9985;
     }
+
+    &:disabled {
+        color: green;
+        cursor: not-allowed;
+    }
 `;
 
 const FormText = styled.p`
@@ -100,23 +107,48 @@ const Link = styled.a`
     cursor: pointer;
 `;
 
+const Error = styled.span`
+    color: red;
+`;
+
 const Login = () => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
+    const { isFetching, error } = useSelector((state) => state.user);
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        login(dispatch, { username, password });
+    };
+
     return (
         <Container>
             <Navbar />
             <LoginWrapper>
                 <Left>
-                    <Image src={login} />
+                    <Image src={loginImage} />
                 </Left>
                 <Right>
                     <Wrapper>
                         <Title>LOGIN</Title>
                         <Form>
                             <Label>E-mail</Label>
-                            <Input placeholder="E-mail" type="text" />
+                            <Input
+                                placeholder="E-mail"
+                                type="text"
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
                             <Label>Password</Label>
-                            <Input placeholder="Password" type="password" />
-                            <Button>LOGIN</Button>
+                            <Input
+                                placeholder="Password"
+                                type="password"
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <Button onClick={handleClick} disabled={isFetching}>
+                                LOGIN
+                            </Button>
+                            {error && <Error>Something went wrong...</Error>}
                             <FormText>BELUM MEMPUNYAI AKUN?</FormText>
                             <Link>SIGN UP</Link>
                         </Form>
