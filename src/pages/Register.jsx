@@ -5,6 +5,7 @@ import registerImage from "../assets/images/register-img.svg";
 import Navbar from "../components/Navbar";
 import { register } from "../redux/apiCalls";
 import { mobile } from "../responsive";
+import { isEmail } from "validator";
 
 const Container = styled.div`
     width: 100vw;

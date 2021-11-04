@@ -3,10 +3,11 @@ import styled from "styled-components";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { useLocation } from "react-router";
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import NumberFormat from "react-number-format";
 import { addProduct } from "../redux/cartRedux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -120,6 +121,7 @@ const Product = () => {
     const id = location.pathname.split("/")[2];
     const [quantity, setQuantity] = useState(1);
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.currentUser);
 
     const [product, setProduct] = useState({});
 
@@ -132,6 +134,16 @@ const Product = () => {
         };
         getProduct();
     }, [id]);
+
+    // console.log(user.others._id);
+
+    // const getCart = async () => {
+    //     try {
+    //         const res = await userRequest.get("/carts/find/" + user.others._id);
+    //         console.log(res.data);
+    //     } catch (err) {}
+    // };
+    // getCart();
 
     const handleClick = () => {
         // Update cart
@@ -159,7 +171,8 @@ const Product = () => {
                     <FilterContainer>
                         <Filter>
                             <FilterTitle>
-                                Gender : {product.categories}
+                                Gender :{" "}
+                                {product.categories && product.categories[1]}
                             </FilterTitle>
                         </Filter>
                         <Filter>
@@ -170,7 +183,9 @@ const Product = () => {
                         <Button onClick={handleClick}>
                             TAMBAH KE KERANJANG
                         </Button>
-                        <CheckoutButton>CHECKOUT</CheckoutButton>
+                        <Link to={"/checkout/" + product._id}>
+                            <CheckoutButton>CHECKOUT</CheckoutButton>
+                        </Link>
                     </AddContainer>
                 </InfoContainer>
             </Wrapper>

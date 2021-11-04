@@ -8,12 +8,7 @@ const TOKEN =
         : JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
               .currentUser.accessToken;
 // const TOKEN =
-//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjdkNWZkMDM0MjMyM2ZmODlhZDFjNSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzNDc1MjYyNCwiZXhwIjoxNjM1MDExODI0fQ.j1kdTMdi1CGvKL32LDJaLE8ir-rM7lzuxAvY3oFckXU";
-
-console.log(
-    JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
-        .currentUser
-);
+//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjdkNWZkMDM0MjMyM2ZmODlhZDFjNSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzNTI1NTgzNiwiZXhwIjoxNjM1NTE1MDM2fQ.azxlE9NUbxrwXzbaR22IzVZN-CGAGnV6mNsL2ig6B3o";
 
 export const publicRequest = axios.create({
     baseURL: BASE_URL,
@@ -21,5 +16,5 @@ export const publicRequest = axios.create({
 
 export const userRequest = axios.create({
     baseURL: BASE_URL,
-    header: { token: `Bearer ${TOKEN}` },
+    headers: { token: `Bearer ${TOKEN}` },
 });

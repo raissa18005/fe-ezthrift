@@ -1,4 +1,4 @@
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import {
     loginFailure,
     loginStart,
@@ -7,6 +7,7 @@ import {
     registerStart,
     registerSuccess,
 } from "./userRedux";
+import { addOrderFailure, addOrderStart, addOrderSuccess } from "./orderRedux";
 
 export const login = async (dispatch, user) => {
     dispatch(loginStart());
@@ -24,5 +25,14 @@ export const register = async (dispatch, user) => {
         dispatch(registerSuccess(res.data));
     } catch (err) {
         dispatch(registerFailure());
+    }
+};
+export const addOrder = async (order, dispatch) => {
+    dispatch(addOrderStart());
+    try {
+        const res = await userRequest.post(`/orders`, order);
+        dispatch(addOrderSuccess(res.data));
+    } catch (err) {
+        dispatch(addOrderFailure());
     }
 };

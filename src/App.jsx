@@ -14,9 +14,16 @@ import {
 } from "react-router-dom";
 import Success from "./pages/Success";
 import { useSelector } from "react-redux";
+import Profile from "./pages/Profile";
+import Riwayat from "./pages/Riwayat";
+import Seller from "./pages/Seller";
+import SellerEdit from "./pages/SellerEdit";
+import Help from "./pages/Help";
+import Notifikasi from "./pages/Notifikasi";
 
 const App = () => {
     const user = useSelector((state) => state.user.currentUser);
+
     return (
         <Router>
             <Switch>
@@ -29,15 +36,14 @@ const App = () => {
                 <Route path="/product/:id">
                     <Product />
                 </Route>
-                <Route path="/cart">
-                    <Cart />
-                </Route>
+
                 <Route path="/about">
                     <AboutUs />
                 </Route>
-                <Route path="/checkout">
-                    <Checkout />
+                <Route path="/help">
+                    <Help />
                 </Route>
+
                 <Route path="/success">
                     <Success />
                 </Route>
@@ -47,6 +53,35 @@ const App = () => {
                 <Route path="/register">
                     {user ? <Redirect to="/" /> : <Register />}
                 </Route>
+                <Route path="/notifications">
+                    <Notifikasi />
+                </Route>
+                {user ? (
+                    <>
+                        <Route path="/cart">
+                            <Cart />
+                        </Route>
+
+                        <Route path="/checkout/:id">
+                            <Checkout />
+                        </Route>
+
+                        <Route path="/profile">
+                            <Profile />
+                        </Route>
+                        <Route path="/history">
+                            <Riwayat />
+                        </Route>
+                        <Route path="/seller/:id">
+                            <SellerEdit />
+                        </Route>
+                        <Route path="/seller">
+                            <Seller />
+                        </Route>
+                    </>
+                ) : (
+                    <Redirect to="/" />
+                )}
             </Switch>
         </Router>
     );

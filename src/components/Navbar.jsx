@@ -162,41 +162,21 @@ const Navbar = () => {
                                             </MenuItem>
                                         </Link>
                                     </StyledNavLink>
-                                    <MenuItem>
-                                        <NavDropdown
-                                            style={{ width: "60px" }}
-                                            title={
-                                                <Person
-                                                    style={{ color: "primary" }}
-                                                />
-                                            }
-                                            id="navbarScrollingDropdown"
-                                        >
-                                            <NavDropdown.Item href="#action3">
-                                                Action
-                                            </NavDropdown.Item>
-                                            <NavDropdown.Item href="#action4">
-                                                Another action
-                                            </NavDropdown.Item>
-                                            <NavDropdown.Divider />
-                                            <NavDropdown.Item
-                                                href="/"
-                                                onClick={handleLogout}
-                                            >
-                                                Logout
-                                            </NavDropdown.Item>
-                                        </NavDropdown>
-                                    </MenuItem>
 
                                     <StyledNavLink>
-                                        <MenuItem>
-                                            <Badge
-                                                badgeContent={4}
-                                                color="primary"
-                                            >
-                                                <Notifications />
-                                            </Badge>
-                                        </MenuItem>
+                                        <Link
+                                            to="/notifications"
+                                            style={{ color: "gray" }}
+                                        >
+                                            <MenuItem>
+                                                <Badge
+                                                    badgeContent={4}
+                                                    color="primary"
+                                                >
+                                                    <Notifications />
+                                                </Badge>
+                                            </MenuItem>
+                                        </Link>
                                     </StyledNavLink>
 
                                     <MenuItem>
@@ -210,11 +190,14 @@ const Navbar = () => {
                                             }
                                             id="navbarScrollingDropdown"
                                         >
-                                            <NavDropdown.Item href="#action3">
-                                                Action
+                                            <NavDropdown.Item href="/profile">
+                                                Lihat Profil
                                             </NavDropdown.Item>
-                                            <NavDropdown.Item href="#action4">
-                                                Another action
+                                            <NavDropdown.Item href="/history">
+                                                Riwayat Belanja
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item href="/seller">
+                                                Dashboard Jual
                                             </NavDropdown.Item>
                                             <NavDropdown.Divider />
                                             <NavDropdown.Item

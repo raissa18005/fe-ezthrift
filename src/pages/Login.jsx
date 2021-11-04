@@ -108,6 +108,7 @@ const Link = styled.a`
 `;
 
 const Error = styled.span`
+    text-align: center;
     color: red;
 `;
 
@@ -133,9 +134,9 @@ const Login = () => {
                     <Wrapper>
                         <Title>LOGIN</Title>
                         <Form>
-                            <Label>E-mail</Label>
+                            <Label>Username</Label>
                             <Input
-                                placeholder="E-mail"
+                                placeholder="Username"
                                 type="text"
                                 onChange={(e) => setUsername(e.target.value)}
                             />
@@ -148,9 +149,9 @@ const Login = () => {
                             <Button onClick={handleClick} disabled={isFetching}>
                                 LOGIN
                             </Button>
-                            {error && <Error>Something went wrong...</Error>}
+                            {error && <Error>Password/e-mail salah</Error>}
                             <FormText>BELUM MEMPUNYAI AKUN?</FormText>
-                            <Link>SIGN UP</Link>
+                            <Link href="/register">DAFTAR</Link>
                         </Form>
                     </Wrapper>
                 </Right>
