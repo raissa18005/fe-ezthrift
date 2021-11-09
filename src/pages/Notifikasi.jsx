@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { FaShippingFast } from "react-icons/fa";
 import SidebarNotifikasi from "../components/SidebarNotifikasi";
+import { userRequest } from "../requestMethods";
+import { useSelector } from "react-redux";
+import OrderCard from "../components/OrderCard";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -49,7 +52,26 @@ const Subtotal = styled.div``;
 
 const WrapperProfile = styled.div``;
 const Title = styled.h1``;
+
 const Notifikasi = () => {
+    const user = useSelector((state) => state.user.currentUser);
+    const userId = user.others._id;
+    const [orders, setOrders] = useState([]);
+
+    useEffect(() => {
+        const getOrders = async () => {
+            try {
+                const res = await userRequest.get(
+                    `http://localhost:5000/api/orders/find/${userId}`
+                );
+                setOrders(res.data);
+            } catch (err) {}
+        };
+        getOrders();
+    }, []);
+
+    // console.log(orders);
+
     return (
         <Container>
             <Navbar />
@@ -57,48 +79,9 @@ const Notifikasi = () => {
                 <SidebarNotifikasi />
                 <Main>
                     <WrapperProfile>
-                        <ProductsHistory>
-                            <StatusContainer>
-                                <FaShippingFast color="#E07A5F" />
-                                <Status>Paket Telah Dikirim</Status>
-                            </StatusContainer>
-                            <ProductContainer>
-                                <ProductTitle>
-                                    T-shirt Katun Uniqlo Crew Neck Pria
-                                </ProductTitle>
-                                <ProductPrice>Rp. 50.000</ProductPrice>
-                            </ProductContainer>
-                            <ProductContainer>
-                                <ProductTitle>Kemeja Uniqlo</ProductTitle>
-                                <ProductPrice>Rp. 90.000</ProductPrice>
-                            </ProductContainer>
-                            <SubtotalContainer>
-                                <SubtotalTitle></SubtotalTitle>
-                                <SubtotalTitle>Subtotal</SubtotalTitle>
-                                <Subtotal>Rp. 140.000</Subtotal>
-                            </SubtotalContainer>
-                        </ProductsHistory>
-                        <ProductsHistory>
-                            <StatusContainer>
-                                <FaShippingFast color="#E07A5F" />
-                                <Status>Paket Telah Dikirim</Status>
-                            </StatusContainer>
-                            <ProductContainer>
-                                <ProductTitle>
-                                    T-shirt Katun Uniqlo Crew Neck Pria
-                                </ProductTitle>
-                                <ProductPrice>Rp. 50.000</ProductPrice>
-                            </ProductContainer>
-                            <ProductContainer>
-                                <ProductTitle>Kemeja Uniqlo</ProductTitle>
-                                <ProductPrice>Rp. 90.000</ProductPrice>
-                            </ProductContainer>
-                            <SubtotalContainer>
-                                <SubtotalTitle></SubtotalTitle>
-                                <SubtotalTitle>Subtotal</SubtotalTitle>
-                                <Subtotal>Rp. 140.000</Subtotal>
-                            </SubtotalContainer>
-                        </ProductsHistory>
+                        {orders.map((item) => (
+                            <OrderCard item={item} key={item._id} />
+                        ))}
                     </WrapperProfile>
                 </Main>
             </Wrapper>

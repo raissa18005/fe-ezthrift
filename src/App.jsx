@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Checkouts from "./pages/Checkouts";
 import AboutUs from "./pages/AboutUs";
 import {
     BrowserRouter as Router,
@@ -23,6 +24,7 @@ import Notifikasi from "./pages/Notifikasi";
 
 const App = () => {
     const user = useSelector((state) => state.user.currentUser);
+    // console.log(user);
 
     return (
         <Router>
@@ -61,7 +63,9 @@ const App = () => {
                         <Route path="/cart">
                             <Cart />
                         </Route>
-
+                        <Route path="/checkouts">
+                            <Checkouts />
+                        </Route>
                         <Route path="/checkout/:id">
                             <Checkout />
                         </Route>

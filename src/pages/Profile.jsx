@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import SidebarProfile from "../components/SidebarProfile";
+import { updateUser } from "../redux/apiCalls";
 import { regions } from "../regions";
 
 const Container = styled.div`
@@ -64,10 +66,38 @@ const WrapperProfile = styled.div``;
 const Title = styled.h1``;
 const Profile = () => {
     const [provinsi, setProvinsi] = useState("");
+    const [inputs, setInputs] = useState({});
+    const user = useSelector((state) =>
+        state.user.currentUser.others
+            ? state.user.currentUser.others
+            : state.user.currentUser
+    );
 
-    const handleFilters = (e) => {
+    // console.log(user);
+
+    const dispatch = useDispatch();
+    const id = user._id;
+
+    const handleProvinsi = (e) => {
         setProvinsi(e.target.value);
     };
+
+    const handleChange = (e) => {
+        setInputs((prev) => {
+            return { ...prev, [e.target.name]: e.target.value };
+        });
+    };
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        const userinfo = {
+            ...inputs,
+            provinsi: provinsi,
+        };
+        updateUser(id, userinfo, dispatch);
+    };
+
+    // console.log(inputs);
 
     const kota = provinsi
         ? regions.filter((item) => item.provinsi === provinsi)[0].kota
@@ -83,19 +113,71 @@ const Profile = () => {
                         <Title>Profil Saya</Title>
                         <Form>
                             <Label>Nama Lengkap</Label>
-                            <Input placeholder="Nama Lengkap" type="text" />
+                            <Input
+                                placeholder={user.namalengkap}
+                                type="text"
+                                name="namalengkap"
+                                onChange={handleChange}
+                            />
                             <Label>Username</Label>
-                            <Input placeholder="Username" type="text" />
+                            <Input
+                                placeholder={
+                                    user.username === " "
+                                        ? "Username"
+                                        : user.username
+                                }
+                                type="text"
+                                name="username"
+                                onChange={handleChange}
+                            />
                             <Label>Alamat Email</Label>
-                            <Input placeholder="Alamat Email" type="text" />
+                            <Input
+                                placeholder={
+                                    user.email === " "
+                                        ? "Alamat Email"
+                                        : user.email
+                                }
+                                type="text"
+                                name="email"
+                                onChange={handleChange}
+                            />
                             <Label>Nomor Telepon</Label>
-                            <Input placeholder="Nomor Telepon" type="text" />
+                            <Input
+                                placeholder={
+                                    user.notelp === " "
+                                        ? "Nomor Telepon"
+                                        : user.notelp
+                                }
+                                type="text"
+                                name="notelp"
+                                onChange={handleChange}
+                            />
                             <Label>Password</Label>
-                            <Input placeholder="Password" type="password" />
+                            <Input
+                                placeholder={user.password}
+                                type="password"
+                                name="password"
+                                onChange={handleChange}
+                            />
                             <Label>Alamat Detail/Jalan</Label>
-                            <Input placeholder="Alamat" type="text" />
+                            <Input
+                                placeholder={
+                                    user.alamat === " " ? "Alamat" : user.alamat
+                                }
+                                type="text"
+                                name="alamat"
+                                onChange={handleChange}
+                            />
                             <Label>Provinsi</Label>
-                            <Select name="provinsi" onChange={handleFilters}>
+                            <Select
+                                placeholder={
+                                    user.provinsi === " "
+                                        ? "Provinsi"
+                                        : user.provinsi
+                                }
+                                name="provinsi"
+                                onChange={handleProvinsi}
+                            >
                                 {regions.map((item) => (
                                     <Option key={item.provinsi}>
                                         {item.provinsi}
@@ -103,13 +185,19 @@ const Profile = () => {
                                 ))}
                             </Select>
                             <Label>Kota</Label>
-                            <Select name="kota">
+                            <Select
+                                placeholder={
+                                    user.kota === " " ? "Kota" : user.kota
+                                }
+                                name="kota"
+                                onChange={handleChange}
+                            >
                                 {kota &&
                                     kota.map((item) => (
                                         <Option key={item}>{item}</Option>
                                     ))}
                             </Select>
-                            <Button>SIMPAN</Button>
+                            <Button onClick={handleClick}>SIMPAN</Button>
                         </Form>
                     </WrapperProfile>
                 </Main>

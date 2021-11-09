@@ -8,7 +8,7 @@ import ovoname from "../assets/images/logo-ovo-2.png";
 import bca from "../assets/images/logo-bca.png";
 import mandiri from "../assets/images/logo-mandiri.png";
 import { useLocation } from "react-router";
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import NumberFormat from "react-number-format";
 import { regions } from "../regions";
 import { addOrder } from "../redux/apiCalls";
@@ -172,11 +172,10 @@ const Button = styled.button`
     }
 `;
 
-const Checkout = () => {
+const Checkouts = () => {
     const location = useLocation();
     const id = location.pathname.split("/")[2];
-    const [product, setProduct] = useState([]);
-    const [productId, setProductId] = useState([]);
+    const [products, setProducts] = useState([]);
     const [provinsi, setProvinsi] = useState("");
     const [inputs, setInputs] = useState({});
     const [file, setFile] = useState(null);
@@ -186,17 +185,19 @@ const Checkout = () => {
     const userId = user.others._id;
 
     useEffect(() => {
-        const getProduct = async () => {
+        const getProducts = async () => {
             try {
-                const res = await publicRequest.get("/products/find/" + id);
-                setProduct(res.data);
-                setProductId(res.data._id);
+                const res = await userRequest.get("/carts/find/" + userId);
+                setProducts(res.data);
+                // setTotal(res.data);
             } catch (err) {}
         };
-        getProduct();
-    }, [id]);
+        getProducts();
+    }, [userId]);
 
-    console.log(productId);
+    const productId = products.map((p) => {
+        return p._id;
+    });
 
     const handleProvinsi = (e) => {
         setProvinsi(e.target.value);
@@ -217,7 +218,11 @@ const Checkout = () => {
         ? regions.filter((item) => item.provinsi === provinsi)[0].kota
         : "";
 
-    const total = product.price + 15000;
+    const subtotal = products.reduce((acc, curr) => {
+        return acc + curr.price;
+    }, 0);
+
+    const total = subtotal + 15000;
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -257,7 +262,6 @@ const Checkout = () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     const order = {
                         ...inputs,
-
                         userId: userId,
                         img: downloadURL,
                         address: address,
@@ -355,19 +359,21 @@ const Checkout = () => {
                         <Summary>
                             <SummaryTitle>Pesanan Anda</SummaryTitle>
                             <Hr />
-                            <SummaryItem>
-                                <SummaryItemText>
-                                    {product.title}
-                                </SummaryItemText>
-                                <SummaryItemPrice>
-                                    <NumberFormat
-                                        value={product.price}
-                                        displayType={"text"}
-                                        thousandSeparator={true}
-                                        prefix={"Rp"}
-                                    />
-                                </SummaryItemPrice>
-                            </SummaryItem>
+                            {products.map((product) => (
+                                <SummaryItem key={product._id}>
+                                    <SummaryItemText>
+                                        {product.title}
+                                    </SummaryItemText>
+                                    <SummaryItemPrice>
+                                        <NumberFormat
+                                            value={product.price}
+                                            displayType={"text"}
+                                            thousandSeparator={true}
+                                            prefix={"Rp"}
+                                        />
+                                    </SummaryItemPrice>
+                                </SummaryItem>
+                            ))}
 
                             <Hr />
                             <SummaryItem>
@@ -377,7 +383,7 @@ const Checkout = () => {
                                 <SummaryItemPrice>
                                     <b>
                                         <NumberFormat
-                                            value={product.price}
+                                            value={subtotal}
                                             displayType={"text"}
                                             thousandSeparator={true}
                                             prefix={"Rp"}
@@ -450,4 +456,4 @@ const Checkout = () => {
     );
 };
 
-export default Checkout;
+export default Checkouts;

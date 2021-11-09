@@ -6,8 +6,17 @@ import {
     registerFailure,
     registerStart,
     registerSuccess,
+    updateUserFailure,
+    updateUserStart,
+    updateUserSuccess,
 } from "./userRedux";
 import { addOrderFailure, addOrderStart, addOrderSuccess } from "./orderRedux";
+import {
+    addProductCartStart,
+    addProductCartSuccess,
+    addProductCartFailure,
+    getProductCartSuccess,
+} from "./cartRedux";
 
 export const login = async (dispatch, user) => {
     dispatch(loginStart());
@@ -27,6 +36,7 @@ export const register = async (dispatch, user) => {
         dispatch(registerFailure());
     }
 };
+
 export const addOrder = async (order, dispatch) => {
     dispatch(addOrderStart());
     try {
@@ -35,4 +45,32 @@ export const addOrder = async (order, dispatch) => {
     } catch (err) {
         dispatch(addOrderFailure());
     }
+};
+
+export const addProductCart = async (userId, productId, dispatch) => {
+    dispatch(addProductCartStart());
+    try {
+        const res = await userRequest.put(`/carts/add/${userId}`, productId);
+        dispatch(addProductCartSuccess(res.data));
+    } catch (err) {
+        dispatch(addProductCartFailure());
+    }
+};
+
+export const updateUser = async (id, userinfo, dispatch) => {
+    dispatch(updateUserStart());
+    try {
+        // update
+        const res = await userRequest.put(`/users/${id}`, userinfo);
+        dispatch(updateUserSuccess(res.data));
+    } catch (err) {
+        dispatch(updateUserFailure());
+    }
+};
+
+export const getProductCart = async (productId, dispatch) => {
+    try {
+        const res = await userRequest.get("/products/find/" + productId);
+        dispatch(getProductCartSuccess(res.data));
+    } catch (err) {}
 };

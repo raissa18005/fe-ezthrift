@@ -4,7 +4,7 @@ import {
     Search,
     ShoppingCartOutlined,
 } from "@material-ui/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Navbar as NavbarBS,
     Nav,
@@ -22,6 +22,7 @@ import { Badge } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../redux/userRedux";
+import { userRequest } from "../requestMethods";
 
 const DropdownButton = styled(Drpdb)`
     background-color: aliceblue;
@@ -67,9 +68,24 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
-    const quantity = useSelector((state) => state.cart.quantity);
+    const [products, setProducts] = useState([]);
+    // const quantity = useSelector((state) => state.cart.quantity);
     const user = useSelector((state) => state.user.currentUser);
     const dispatch = useDispatch();
+    // const userId = user && user.others._id;
+
+    // useEffect(() => {
+    //     const getProducts = async () => {
+    //         try {
+    //             const res = await userRequest.get("/carts/find/" + userId);
+    //             setProducts(res.data);
+    //             // setTotal(res.data);
+    //         } catch (err) {}
+    //     };
+    //     getProducts();
+    // }, [userId]);
+
+    // const quantity = products.length;
 
     const handleLogout = () => {
         // Update cart
@@ -154,7 +170,7 @@ const Navbar = () => {
                                         >
                                             <MenuItem>
                                                 <Badge
-                                                    badgeContent={quantity}
+                                                    // badgeContent={quantity}
                                                     color="primary"
                                                 >
                                                     <ShoppingCartOutlined />

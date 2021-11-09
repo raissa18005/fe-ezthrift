@@ -1,22 +1,16 @@
-import {
-    Add,
-    CancelPresentation,
-    Clear,
-    Remove,
-    RemoveShoppingCart,
-} from "@material-ui/icons";
-import React from "react";
-import { useSelector } from "react-redux";
+import { Clear } from "@material-ui/icons";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 import NumberFormat from "react-number-format";
+import { publicRequest, userRequest } from "../requestMethods";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
     margin-top: 59px;
-    margin-bottom: 20px;
 `;
 const Wrapper = styled.div`
     padding: 20px;
@@ -136,8 +130,9 @@ const Summary = styled.div`
     padding: 20px;
     height: 70%;
 `;
-const SummaryTitle = styled.h1`
+const SummaryTitle = styled.h2`
     font-weight: 200;
+    text-align: center;
 `;
 const SummaryItem = styled.div`
     margin: 25px 0;
@@ -165,7 +160,56 @@ const SummaryButton = styled.button`
 `;
 
 const Cart = () => {
-    const cart = useSelector((state) => state.cart);
+    // const cart = useSelector((state) => state.cart);
+    const dispatch = useDispatch();
+    const [products, setProducts] = useState([]);
+    // const [total, setTotal] = useState(0);
+    const user = useSelector((state) => state.user.currentUser);
+    const userId = user.others._id;
+
+    useEffect(() => {
+        const getProducts = async () => {
+            try {
+                const res = await userRequest.get("/carts/find/" + userId);
+                setProducts(res.data);
+                // setTotal(res.data);
+            } catch (err) {}
+        };
+        getProducts();
+    }, [userId]);
+
+    // console.log(cart.products);
+    // console.log(total);
+    console.log(products);
+
+    const handleDelete = (id) => {
+        const del = {
+            productId: id,
+        };
+
+        const deleteProduct = async () => {
+            try {
+                const res = await userRequest.put(
+                    `/carts/delete/${userId}`,
+                    del
+                );
+            } catch (err) {}
+        };
+        deleteProduct();
+        console.log(
+            products.splice(
+                products.findIndex((item) => item._id === id),
+                1
+            )
+        );
+    };
+
+    const subtotal = products.reduce((acc, curr) => {
+        return acc + curr.price;
+    }, 0);
+
+    const total = subtotal + 15000;
+    console.log(subtotal);
 
     return (
         <Container>
@@ -182,8 +226,8 @@ const Cart = () => {
                 </Top>
                 <Bottom>
                     <Info>
-                        {cart.products.map((product) => (
-                            <Product>
+                        {products.map((product) => (
+                            <Product key={product._id}>
                                 <ProductDetail>
                                     <Image src={product.img} />
                                     <Details>
@@ -203,7 +247,13 @@ const Cart = () => {
                                 </ProductDetail>
                                 <PriceDetail>
                                     <ProductRemoveContainer>
-                                        <ProductRemove>Hapus</ProductRemove>
+                                        <ProductRemove
+                                            onClick={() =>
+                                                handleDelete(product._id)
+                                            }
+                                        >
+                                            Hapus
+                                        </ProductRemove>
                                         <RemoveIcon>
                                             <Clear />
                                         </RemoveIcon>
@@ -227,7 +277,7 @@ const Cart = () => {
                             <SummaryItemText>Subtotal</SummaryItemText>
                             <SummaryItemPrice>
                                 <NumberFormat
-                                    value={cart.total}
+                                    value={subtotal}
                                     displayType={"text"}
                                     thousandSeparator={true}
                                     prefix={"Rp"}
@@ -240,23 +290,28 @@ const Cart = () => {
                             </SummaryItemText>
                             <SummaryItemPrice>Rp. 15.000</SummaryItemPrice>
                         </SummaryItem>
-                        <SummaryItem>
+                        {/* <SummaryItem>
                             <SummaryItemText>Shipping Discount</SummaryItemText>
                             <SummaryItemPrice>Rp. -30.000</SummaryItemPrice>
-                        </SummaryItem>
+                        </SummaryItem> */}
                         <SummaryItem type="total">
                             <SummaryItemText>Total</SummaryItemText>
                             <SummaryItemPrice>
                                 <NumberFormat
-                                    value={cart.total}
+                                    value={total}
                                     displayType={"text"}
                                     thousandSeparator={true}
                                     prefix={"Rp"}
                                 />
                             </SummaryItemPrice>
                         </SummaryItem>
-                        <SummaryButton>CHECKOUT</SummaryButton>
-                        <SummaryButton type="donasi">DONASI</SummaryButton>
+                        <Link to="/checkouts">
+                            <SummaryButton>CHECKOUT</SummaryButton>
+                        </Link>
+
+                        <Link to="/donasi">
+                            <SummaryButton type="donasi">DONASI</SummaryButton>
+                        </Link>
                     </Summary>
                 </Bottom>
             </Wrapper>

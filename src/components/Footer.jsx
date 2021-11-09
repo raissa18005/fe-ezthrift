@@ -9,6 +9,7 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
     display: flex;
@@ -107,7 +108,12 @@ const Footer = () => {
                     <ListItem>Man Fashion</ListItem>
                     <ListItem>Woman Fashion</ListItem>
                     <ListItem>About us</ListItem>
-                    <ListItem>Help</ListItem>
+                    <Link
+                        to="/help"
+                        style={{ color: "white", textDecoration: "none" }}
+                    >
+                        <ListItem>Help</ListItem>
+                    </Link>
                 </List>
             </Center>
             <Right>

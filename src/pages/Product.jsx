@@ -8,6 +8,7 @@ import NumberFormat from "react-number-format";
 import { addProduct } from "../redux/cartRedux";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { addProductCart } from "../redux/apiCalls";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -119,9 +120,9 @@ const CheckoutButton = styled.button`
 const Product = () => {
     const location = useLocation();
     const id = location.pathname.split("/")[2];
-    const [quantity, setQuantity] = useState(1);
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.currentUser);
+    const userId = user.others._id;
 
     const [product, setProduct] = useState({});
 
@@ -137,17 +138,26 @@ const Product = () => {
 
     // console.log(user.others._id);
 
-    // const getCart = async () => {
-    //     try {
-    //         const res = await userRequest.get("/carts/find/" + user.others._id);
-    //         console.log(res.data);
-    //     } catch (err) {}
-    // };
-    // getCart();
+    // useEffect(() => {
+    //     const getCart = async () => {
+    //         try {
+    //             const res = await userRequest.get("/carts/find/" + userId);
+    //             setCart(res.data);
+    //         } catch (err) {}
+    //     };
+    //     getCart();
+    // }, [userId]);
+    // console.log(cart);
 
     const handleClick = () => {
         // Update cart
-        dispatch(addProduct({ ...product, quantity }));
+        // dispatch(addProduct({ ...product, quantity }));
+
+        const productId = {
+            productId: id,
+        };
+
+        addProductCart(userId, productId, dispatch);
     };
 
     return (
