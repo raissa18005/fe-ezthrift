@@ -148,7 +148,7 @@ const Login = () => {
                             <Button onClick={handleClick} disabled={isFetching}>
                                 LOGIN
                             </Button>
-                            {error && <Error>Password/e-mail salah</Error>}
+                            {error && <Error>Password/username salah</Error>}
                             <FormText>BELUM MEMPUNYAI AKUN?</FormText>
                             <Link href="/register">DAFTAR</Link>
                         </Form>
