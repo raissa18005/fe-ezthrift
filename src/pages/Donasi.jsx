@@ -339,16 +339,18 @@ const Donasi = () => {
                                 <PaymentInfo>
                                     <PaymentLogo src={bca} />
                                     <PaymentDesc>
-                                        <div className="">OVO</div>
-                                        <div className="">082323555889</div>
+                                        <div className="">
+                                            Bank Central Asia{" "}
+                                        </div>
+                                        <div className="">27550723</div>
                                         <div className="">EzThrift</div>
                                     </PaymentDesc>
                                 </PaymentInfo>
                                 <PaymentInfo>
                                     <PaymentLogo src={mandiri} />
                                     <PaymentDesc>
-                                        <div className="">OVO</div>
-                                        <div className="">082323555889</div>
+                                        <div className="">Bank Mandiri </div>
+                                        <div className="">177-224-3325</div>
                                         <div className="">EzThrift</div>
                                     </PaymentDesc>
                                 </PaymentInfo>

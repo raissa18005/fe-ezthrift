@@ -9,15 +9,15 @@ export const sliderItems = [
     {
         id: 2,
         img: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8ZmFzaGlvbnxlbnwwfDB8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=60",
-        title: "AUTUMN COLLECTION",
-        desc: "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
+        title: "PAKAIAN PALING TRENDY DAN MURAH SAAT INI",
+        desc: "JANGAN SIA-SIAKAN WAKTU, BELI SEBELUM BARANG TERJUAL!.",
         bg: "fcf1ed",
     },
     {
         id: 3,
         img: "https://images.unsplash.com/photo-1508427953056-b00b8d78ebf5?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDZ8fGZhc2hpb258ZW58MHwwfDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=60",
-        title: "LOUNGEWEAR LOVE",
-        desc: "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
+        title: "PAKAIAN SANTAI",
+        desc: "HANYA DI EZTHRIFT BARANG THRIFT TERJAMIN BERKUALITAS.",
         bg: "fbf0f4",
     },
 ];

@@ -157,7 +157,7 @@ const Register = () => {
                                 <Error>Username/e-mail sudah terdaftar</Error>
                             )}
                             <FormText>SUDAH MEMPUNYAI AKUN?</FormText>
-                            <Link>LOGIN</Link>
+                            <Link href="/register">LOGIN</Link>
                         </Form>
                     </Wrapper>
                 </Right>

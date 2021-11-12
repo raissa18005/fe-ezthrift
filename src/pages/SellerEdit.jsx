@@ -79,6 +79,10 @@ const ImgContainer = styled.div`
     align-items: center;
     justify-content: center;
 `;
+const Warn = styled.p`
+    padding: 10px 0;
+    color: blue;
+`;
 const ProductImage = styled.img`
     width: 100%;
     height: 100%;
@@ -211,6 +215,10 @@ const SellerEdit = () => {
                                 name="price"
                                 onChange={handleChange}
                             />
+                            <Warn>
+                                Perubahan pada produk hanya bisa dilakukan
+                                sekali untuk merubah kembali hubungi admin
+                            </Warn>
                             <Button onClick={handleClick}>JUAL</Button>
                         </Form>
                     </WrapperSeller>
