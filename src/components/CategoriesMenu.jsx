@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -39,13 +40,54 @@ const CategoriesMenu = () => {
                 <CategoriesMenus>
                     <CategoriesTitle>Semua Kategori</CategoriesTitle>
                     <CategoriesList>
-                        <CategoriesListItem>Lihat Semua</CategoriesListItem>
-                        <CategoriesListItem>T-Shirt</CategoriesListItem>
-                        <CategoriesListItem>Kemeja</CategoriesListItem>
-                        <CategoriesListItem>Gaun & Blouse </CategoriesListItem>
-                        <CategoriesListItem>Hoodie & Sweat</CategoriesListItem>
-                        <CategoriesListItem>Celana Pendek</CategoriesListItem>
-                        <CategoriesListItem>Celana Panjang</CategoriesListItem>
+                        <Link
+                            to="/products/All"
+                            style={{ color: "black", textDecoration: "none" }}
+                        >
+                            <CategoriesListItem>Lihat Semua</CategoriesListItem>
+                        </Link>
+                        <Link
+                            to="/products/T-Shirt"
+                            style={{ color: "black", textDecoration: "none" }}
+                        >
+                            <CategoriesListItem>T-Shirt</CategoriesListItem>
+                        </Link>
+                        <Link
+                            to="/products/Kemeja"
+                            style={{ color: "black", textDecoration: "none" }}
+                        >
+                            <CategoriesListItem>Kemeja</CategoriesListItem>
+                        </Link>
+                        <Link
+                            to="/products/Gaun"
+                            style={{ color: "black", textDecoration: "none" }}
+                        >
+                            <CategoriesListItem>Gaun </CategoriesListItem>
+                        </Link>
+                        <Link
+                            to="/products/Blouse"
+                            style={{ color: "black", textDecoration: "none" }}
+                        >
+                            <CategoriesListItem>Blouse </CategoriesListItem>
+                        </Link>
+                        <Link
+                            to="/products/Hoodie"
+                            style={{ color: "black", textDecoration: "none" }}
+                        >
+                            <CategoriesListItem>Hoodie </CategoriesListItem>
+                        </Link>
+                        <Link
+                            to="/products/Sweat"
+                            style={{ color: "black", textDecoration: "none" }}
+                        >
+                            <CategoriesListItem>Sweat </CategoriesListItem>
+                        </Link>
+                        <Link
+                            to="/products/Celana"
+                            style={{ color: "black", textDecoration: "none" }}
+                        >
+                            <CategoriesListItem>Celana </CategoriesListItem>
+                        </Link>
                     </CategoriesList>
                 </CategoriesMenus>
             </Wrapper>

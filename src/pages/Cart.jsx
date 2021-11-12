@@ -8,6 +8,7 @@ import { mobile } from "../responsive";
 import NumberFormat from "react-number-format";
 import { publicRequest, userRequest } from "../requestMethods";
 import { Link } from "react-router-dom";
+import { addQuantity } from "../redux/cartRedux";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -118,7 +119,7 @@ const ProductPrice = styled.div`
 `;
 
 const Hr = styled.hr`
-    background-color: #eee;
+    background-color: #aaa9a9;
     border: none;
     height: 1px;
 `;
@@ -160,10 +161,9 @@ const SummaryButton = styled.button`
 `;
 
 const Cart = () => {
-    // const cart = useSelector((state) => state.cart);
+    const quantity = useSelector((state) => state.quantity);
     const dispatch = useDispatch();
     const [products, setProducts] = useState([]);
-    // const [total, setTotal] = useState(0);
     const user = useSelector((state) => state.user.currentUser);
     const userId = user.others._id;
 
@@ -178,10 +178,6 @@ const Cart = () => {
         getProducts();
     }, [userId]);
 
-    // console.log(cart.products);
-    // console.log(total);
-    console.log(products);
-
     const handleDelete = (id) => {
         const del = {
             productId: id,
@@ -193,9 +189,27 @@ const Cart = () => {
                     `/carts/delete/${userId}`,
                     del
                 );
+                const getProducts = async () => {
+                    try {
+                        const res = await userRequest.get(
+                            "/carts/find/" + userId
+                        );
+                        setProducts(res.data);
+                        // setTotal(res.data);
+                    } catch (err) {}
+                };
+                getProducts();
             } catch (err) {}
         };
         deleteProduct();
+
+        // setProducts(
+        //     products.splice(
+        //     products.findIndex((item) => item._id === id),
+        //      1
+        //     )
+        // );
+
         console.log(
             products.splice(
                 products.findIndex((item) => item._id === id),
@@ -209,7 +223,6 @@ const Cart = () => {
     }, 0);
 
     const total = subtotal + 15000;
-    console.log(subtotal);
 
     return (
         <Container>
@@ -227,49 +240,51 @@ const Cart = () => {
                 <Bottom>
                     <Info>
                         {products.map((product) => (
-                            <Product key={product._id}>
-                                <ProductDetail>
-                                    <Image src={product.img} />
-                                    <Details>
-                                        <ProductName>
-                                            <b>Product: </b>
-                                            {product.title}
-                                        </ProductName>
-                                        <ProductId>
-                                            <b>ID: </b>
-                                            {product._id}
-                                        </ProductId>
-                                        <ProductSize>
-                                            <b>Size: </b>
-                                            {product.size}
-                                        </ProductSize>
-                                    </Details>
-                                </ProductDetail>
-                                <PriceDetail>
-                                    <ProductRemoveContainer>
-                                        <ProductRemove
-                                            onClick={() =>
-                                                handleDelete(product._id)
-                                            }
-                                        >
-                                            Hapus
-                                        </ProductRemove>
-                                        <RemoveIcon>
-                                            <Clear />
-                                        </RemoveIcon>
-                                    </ProductRemoveContainer>
-                                    <ProductPrice>
-                                        <NumberFormat
-                                            value={product.price}
-                                            displayType={"text"}
-                                            thousandSeparator={true}
-                                            prefix={"Rp"}
-                                        />
-                                    </ProductPrice>
-                                </PriceDetail>
-                            </Product>
+                            <div className="" key={product._id}>
+                                <Product>
+                                    <ProductDetail>
+                                        <Image src={product.img} />
+                                        <Details>
+                                            <ProductName>
+                                                <b>Product: </b>
+                                                {product.title}
+                                            </ProductName>
+                                            <ProductId>
+                                                <b>ID: </b>
+                                                {product._id}
+                                            </ProductId>
+                                            <ProductSize>
+                                                <b>Size: </b>
+                                                {product.size}
+                                            </ProductSize>
+                                        </Details>
+                                    </ProductDetail>
+                                    <PriceDetail>
+                                        <ProductRemoveContainer>
+                                            <ProductRemove
+                                                onClick={() =>
+                                                    handleDelete(product._id)
+                                                }
+                                            >
+                                                Hapus
+                                            </ProductRemove>
+                                            <RemoveIcon>
+                                                <Clear />
+                                            </RemoveIcon>
+                                        </ProductRemoveContainer>
+                                        <ProductPrice>
+                                            <NumberFormat
+                                                value={product.price}
+                                                displayType={"text"}
+                                                thousandSeparator={true}
+                                                prefix={"Rp"}
+                                            />
+                                        </ProductPrice>
+                                    </PriceDetail>
+                                </Product>
+                                <Hr />
+                            </div>
                         ))}
-                        <Hr />
                     </Info>
                     <Summary>
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>

@@ -152,13 +152,13 @@ const Profile = () => {
                                 name="notelp"
                                 onChange={handleChange}
                             />
-                            <Label>Password</Label>
+                            {/* <Label>Password</Label>
                             <Input
                                 placeholder={user.password}
                                 type="password"
                                 name="password"
                                 onChange={handleChange}
-                            />
+                            /> */}
                             <Label>Alamat Detail/Jalan</Label>
                             <Input
                                 placeholder={

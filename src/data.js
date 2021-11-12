@@ -27,19 +27,19 @@ export const categories = [
         id: 1,
         img: "https://images.unsplash.com/photo-1617365564485-d2786503d6ae?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=392&q=80",
         title: "SHIRT STYLE!",
-        cat: "woman",
+        cat: "Wanita",
     },
     {
         id: 2,
         img: "https://images.unsplash.com/photo-1600717535275-0b18ede2f7fc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=464&q=80",
         title: "CELANA TRENDY!",
-        cat: "coat",
+        cat: "Celana",
     },
     {
         id: 3,
         img: "https://images.unsplash.com/photo-1553728437-e15abbe95e6b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
         title: "JAKET/HOODIE",
-        cat: "jeans",
+        cat: "Hoodie",
     },
 ];
 

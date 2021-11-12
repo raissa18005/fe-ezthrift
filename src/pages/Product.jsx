@@ -7,6 +7,7 @@ import { publicRequest, userRequest } from "../requestMethods";
 import NumberFormat from "react-number-format";
 import { addProduct } from "../redux/cartRedux";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { addProductCart } from "../redux/apiCalls";
 
@@ -60,40 +61,12 @@ const FilterTitle = styled.span`
     font-size: 20px;
     font-weight: 300;
 `;
-const FilterColor = styled.div`
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: ${(props) => props.color};
-    margin: 0 5px;
-    cursor: pointer;
-`;
-const FilterSize = styled.select`
-    margin-left: 10px;
-    padding: 5px;
-`;
-const FilterSizeOption = styled.option``;
 const AddContainer = styled.div`
     width: 80%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-`;
-const AmountContainer = styled.div`
-    display: flex;
-    align-items: center;
-    font-weight: 700;
-`;
-const Amount = styled.span`
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
-    border: 1px solid teal;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 5px;
 `;
 const Button = styled.button`
     padding: 15px;
@@ -122,9 +95,12 @@ const Product = () => {
     const id = location.pathname.split("/")[2];
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.currentUser);
-    const userId = user.others._id;
-
+    const cart = useSelector((state) => state.cart);
+    const isLogin = useSelector((state) => state.user.isLoggedIn);
+    const userId = isLogin === true && user.others._id;
     const [product, setProduct] = useState({});
+    const [products, setProducts] = useState([]);
+    const history = useHistory();
 
     useEffect(() => {
         const getProduct = async () => {
@@ -136,19 +112,18 @@ const Product = () => {
         getProduct();
     }, [id]);
 
-    // console.log(user.others._id);
+    useEffect(() => {
+        const getProducts = async () => {
+            try {
+                const res = await userRequest.get("/carts/find/" + userId);
+                setProducts(res.data);
+            } catch (err) {}
+        };
+        getProducts();
+    }, [userId]);
 
-    // useEffect(() => {
-    //     const getCart = async () => {
-    //         try {
-    //             const res = await userRequest.get("/carts/find/" + userId);
-    //             setCart(res.data);
-    //         } catch (err) {}
-    //     };
-    //     getCart();
-    // }, [userId]);
-    // console.log(cart);
-
+    const carted = products.filter((p) => id.includes(p._id));
+    // console.log(carted);
     const handleClick = () => {
         // Update cart
         // dispatch(addProduct({ ...product, quantity }));
@@ -158,6 +133,7 @@ const Product = () => {
         };
 
         addProductCart(userId, productId, dispatch);
+        history.push("/cart");
     };
 
     return (
@@ -190,12 +166,31 @@ const Product = () => {
                         </Filter>
                     </FilterContainer>
                     <AddContainer>
-                        <Button onClick={handleClick}>
-                            TAMBAH KE KERANJANG
-                        </Button>
-                        <Link to={"/checkout/" + product._id}>
-                            <CheckoutButton>CHECKOUT</CheckoutButton>
-                        </Link>
+                        {carted.length === 0 ? (
+                            isLogin === true ? (
+                                <Button onClick={handleClick}>
+                                    TAMBAH KE KERANJANG
+                                </Button>
+                            ) : (
+                                <Link to={"/login"}>
+                                    <Button>TAMBAH KE KERANJANG</Button>
+                                </Link>
+                            )
+                        ) : (
+                            <Link to={"/cart"}>
+                                <Button>DITAMBAHKAN KE KERANJANG</Button>
+                            </Link>
+                        )}
+
+                        {isLogin === true ? (
+                            <Link to={"/checkout/" + product._id}>
+                                <CheckoutButton>CHECKOUT</CheckoutButton>
+                            </Link>
+                        ) : (
+                            <Link to={"/login"}>
+                                <CheckoutButton>CHECKOUT</CheckoutButton>
+                            </Link>
+                        )}
                     </AddContainer>
                 </InfoContainer>
             </Wrapper>

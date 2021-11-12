@@ -27,10 +27,11 @@ export const login = async (dispatch, user) => {
         dispatch(loginFailure());
     }
 };
-export const register = async (dispatch, user) => {
+export const register = async (dispatch, user, history) => {
     dispatch(registerStart());
     try {
         const res = await publicRequest.post("/auth/register", user);
+        history.push("/login");
         dispatch(registerSuccess(res.data));
     } catch (err) {
         dispatch(registerFailure());
@@ -72,5 +73,19 @@ export const getProductCart = async (productId, dispatch) => {
     try {
         const res = await userRequest.get("/products/find/" + productId);
         dispatch(getProductCartSuccess(res.data));
+    } catch (err) {}
+};
+
+export const deleteCartProducts = async (userId, dispatch) => {
+    try {
+        const res = await userRequest.put(`/carts/deleteall/${userId}`);
+    } catch (err) {}
+};
+export const updateStatusSold = async (id, dispatch) => {
+    try {
+        // update
+        const res = await userRequest.put(`/products/${id}`, {
+            status: "sold",
+        });
     } catch (err) {}
 };

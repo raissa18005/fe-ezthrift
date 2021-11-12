@@ -7,11 +7,15 @@ import ovo from "../assets/images/logo-ovo-1.png";
 import ovoname from "../assets/images/logo-ovo-2.png";
 import bca from "../assets/images/logo-bca.png";
 import mandiri from "../assets/images/logo-mandiri.png";
-import { useLocation } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { publicRequest, userRequest } from "../requestMethods";
 import NumberFormat from "react-number-format";
 import { regions } from "../regions";
-import { addOrder } from "../redux/apiCalls";
+import {
+    addOrder,
+    deleteCartProducts,
+    updateStatusSold,
+} from "../redux/apiCalls";
 import {
     getStorage,
     ref,
@@ -183,6 +187,8 @@ const Checkouts = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.currentUser);
     const userId = user.others._id;
+    const { error } = useSelector((state) => state.order);
+    const history = useHistory();
 
     useEffect(() => {
         const getProducts = async () => {
@@ -269,6 +275,13 @@ const Checkouts = () => {
                         products: productId,
                     };
                     addOrder(order, dispatch);
+                    if (error === false) {
+                        productId.map((p) => {
+                            updateStatusSold(p, dispatch);
+                        });
+                        deleteCartProducts(userId, dispatch);
+                        history.push("/notifications");
+                    }
                 });
             }
         );

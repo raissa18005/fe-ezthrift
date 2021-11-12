@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { popularProducts } from "../data";
 import Product from "./Product";
 import axios from "axios";
+import { publicRequest } from "../requestMethods";
 
 const Container = styled.div`
     padding: 20px;
@@ -11,38 +12,42 @@ const Container = styled.div`
     justify-content: space-between;
 `;
 
-const Products = ({ cat, filters, sort }) => {
+const SearchedProducts = ({ searchText, filters, sort }) => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const [searchResults, setSearchResults] = useState([]);
+
+    console.log(searchText);
 
     useEffect(() => {
         const getProducts = async () => {
             try {
-                const res = await axios.get(
-                    cat
-                        ? cat === "All"
-                            ? `http://localhost:5000/api/products`
-                            : `http://localhost:5000/api/products?category=${cat}`
-                        : "http://localhost:5000/api/products"
-                );
-                setProducts(res.data);
+                const res = await publicRequest.get(`/products`);
+                setProducts(res.data.filter((p) => p.status === "selling"));
             } catch (err) {}
         };
         getProducts();
-    }, [cat]);
-    const selling = products.filter((p) => p.status === "selling");
+    }, []);
 
     useEffect(() => {
-        cat &&
+        setSearchResults(
+            products.filter((p) =>
+                p.title.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+    }, [products, searchText]);
+
+    useEffect(() => {
+        searchText &&
             setFilteredProducts(
-                selling.filter((item) =>
+                searchResults.filter((item) =>
                     Object.entries(filters).every(
                         ([key, value]) => item[key] === value
                         // ([key, value]) => item[key]includes(value)
                     )
                 )
             );
-    }, [products, cat, filters]);
+    }, [products, searchText, filters, searchResults]);
 
     useEffect(() => {
         if (sort === "newest") {
@@ -60,17 +65,15 @@ const Products = ({ cat, filters, sort }) => {
         }
     }, [sort]);
 
+    console.log(filteredProducts);
+
     return (
         <Container>
-            {cat
-                ? filteredProducts.map((item) => (
-                      <Product item={item} key={item._id} />
-                  ))
-                : selling
-                      .slice(0, 8)
-                      .map((item) => <Product item={item} key={item._id} />)}
+            {filteredProducts.map((item) => (
+                <Product item={item} key={item._id} />
+            ))}
         </Container>
     );
 };
 
-export default Products;
+export default SearchedProducts;

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { publicRequest } from "../requestMethods";
 import CategoriesMenu from "../components/CategoriesMenu";
 import Navbar from "../components/Navbar";
 import styled from "styled-components";
 import Products from "../components/Products";
 import Footer from "../components/Footer";
 import { useLocation } from "react-router";
+import SearchedProducts from "../components/SearchedProducts";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -40,11 +42,50 @@ const Select = styled.select`
 `;
 const Option = styled.option``;
 
-const ProductList = () => {
-    const location = useLocation();
-    const cat = location.pathname.split("/")[2];
+const SearchPage = () => {
+    // const [isLoading, setIsLoading] = useState(true);
+    const [searchResults, setSearchResults] = useState([]);
+    // const [searchText, setSearchText] = useState("");
+    const [products, setProducts] = useState([]);
     const [filters, setFilters] = useState({});
     const [sort, setSort] = useState("newest");
+    const location = useLocation();
+    let searchText = location.state.searchText.searchText;
+
+    // console.log(location.state.searchText.searchText);
+
+    useEffect(() => {
+        const getProducts = async () => {
+            try {
+                const res = await publicRequest.get(`/products`);
+                setProducts(res.data.filter((p) => p.status === "selling"));
+                // setSearchText(location.state.searchText.searchText);
+            } catch (err) {}
+        };
+        getProducts();
+    }, []);
+
+    useEffect(() => {
+        setSearchResults(
+            products.filter((p) =>
+                p.title.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+    }, [products, searchText]);
+
+    console.log(searchText);
+
+    // useEffect(() => {
+    //     let prevSearch = prevProps.location.state.searchText;
+    // }, [searchText]);
+
+    // const componentDidUpdate = (prevProps) => {
+    //     let prevSearch = prevProps.location.state.searchText;
+    //     let newSearch = this.props.location.state.searchText;
+    //     if (prevSearch !== newSearch) {
+    //         this.handleSearch();
+    //     }
+    // };
 
     const handleFilters = (e) => {
         const value = e.target.value;
@@ -58,11 +99,11 @@ const ProductList = () => {
         <Container>
             <Navbar />
             <Wrapper>
-                <CategoriesMenu />
+                {/* <CategoriesMenu /> */}
                 <OtherPages>
-                    <Title>{cat}</Title>
+                    <Title>{searchText}</Title>
                     <FilterContainer>
-                        <Filter>
+                        {/* <Filter>
                             <FilterText>Filter Products:</FilterText>
                             <Select name="color" onChange={handleFilters}>
                                 <Option disabled>Color</Option>
@@ -81,7 +122,7 @@ const ProductList = () => {
                                 <Option>L</Option>
                                 <Option>XL</Option>
                             </Select>
-                        </Filter>
+                        </Filter> */}
                         <Filter>
                             <FilterText>Sort Products:</FilterText>
                             <Select onChange={(e) => setSort(e.target.value)}>
@@ -91,7 +132,11 @@ const ProductList = () => {
                             </Select>
                         </Filter>
                     </FilterContainer>
-                    <Products cat={cat} filters={filters} sort={sort} />
+                    <SearchedProducts
+                        searchText={searchText}
+                        filters={filters}
+                        sort={sort}
+                    />
                 </OtherPages>
             </Wrapper>
             <Footer />
@@ -99,4 +144,4 @@ const ProductList = () => {
     );
 };
 
-export default ProductList;
+export default SearchPage;

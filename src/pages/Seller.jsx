@@ -62,6 +62,18 @@ const ProductImage = styled.img`
 `;
 
 const ProductDetail = styled.div``;
+const Span = styled.span`
+    font-weight: bold;
+    color: ${(props) => {
+        if (props.status === "pending") {
+            return "red";
+        } else if (props.status === "selling") {
+            return "blue";
+        } else {
+            return "green";
+        }
+    }};
+`;
 const InfoContainer = styled.div`
     flex: 2;
     padding: 20px 0;
@@ -137,6 +149,8 @@ const Seller = () => {
         getProducts();
     }, []);
 
+    console.log(products.length === 0);
+
     if (
         user.alamat !== " " &&
         user.namalengkap !== " " &&
@@ -149,11 +163,10 @@ const Seller = () => {
         isPenjual = "";
     }
 
-    const coba = products.map((prod) => {
-        return prod;
-    });
-
-    console.log(coba);
+    const soldProducts = products.filter((p) => p.status === "sold");
+    const penghasilan = soldProducts.reduce((acc, curr) => {
+        return acc + curr.price;
+    }, 0);
 
     return (
         <Container>
@@ -165,11 +178,21 @@ const Seller = () => {
                         <WrapperSeller>
                             <Title>Dashboard Jual</Title>
                             <Card>
-                                <Title>Penghasilan Anda</Title>
-                                <Penghasilan>Rp.100.000</Penghasilan>
+                                <Title>Penghasilan Saya</Title>
+                                <Penghasilan>
+                                    <NumberFormat
+                                        value={penghasilan}
+                                        displayType={"text"}
+                                        thousandSeparator={true}
+                                        prefix={"Rp"}
+                                    />
+                                </Penghasilan>
                             </Card>
                             <Card>
-                                <WhatsappLink>
+                                <WhatsappLink
+                                    href="https://wa.wizard.id/b3dbce"
+                                    target="_blank"
+                                >
                                     <WhatsappLogo src={walogo} />
                                     WhatsApp
                                 </WhatsappLink>
@@ -177,7 +200,7 @@ const Seller = () => {
                             <ProductsTitle>Produk Saya</ProductsTitle>
                             <Products>
                                 {products.map((product) => (
-                                    <>
+                                    <div className="" key={product._id}>
                                         <Product>
                                             <ImgContainer>
                                                 <ProductImage
@@ -207,28 +230,44 @@ const Seller = () => {
                                                     </ProductDetail>
                                                     <ProductDetail>
                                                         Status :{" "}
-                                                        {product.status}
+                                                        <Span
+                                                            status={
+                                                                product.status
+                                                            }
+                                                        >
+                                                            {product.status}
+                                                        </Span>
                                                     </ProductDetail>
                                                     <ProductDetail>
                                                         Deskripsi :{" "}
                                                         {product.desc}
                                                     </ProductDetail>
                                                 </Info>
-                                                <ButtonContainer>
-                                                    <Link
-                                                        to={`/seller/${product.id}`}
-                                                    >
-                                                        <EditButton>
-                                                            Edit Harga
-                                                        </EditButton>
-                                                    </Link>
-                                                </ButtonContainer>
+                                                {product.status ===
+                                                    "pending" && (
+                                                    <ButtonContainer>
+                                                        <Link
+                                                            to={`/edit/${product._id}`}
+                                                        >
+                                                            <EditButton>
+                                                                Edit Harga
+                                                            </EditButton>
+                                                        </Link>
+                                                    </ButtonContainer>
+                                                )}
                                             </InfoContainer>
                                         </Product>
                                         <Hr />
-                                    </>
+                                    </div>
                                 ))}
                             </Products>
+                            {products.length === 0 && (
+                                <Products>
+                                    Anda belum memiliki produk, silahkan
+                                    menghubungi whatsapp kami melalui link di
+                                    atas untuk mulai menjual
+                                </Products>
+                            )}
                         </WrapperSeller>
                     ) : (
                         <NotSeller>

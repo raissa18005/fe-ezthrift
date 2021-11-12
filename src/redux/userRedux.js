@@ -6,33 +6,42 @@ const userSlice = createSlice({
         currentUser: null,
         isFetching: false,
         error: false,
+        isLoggedIn: false,
     },
     reducers: {
         loginStart: (state) => {
             state.isFetching = true;
+            state.isLoggedIn = false;
         },
         loginSuccess: (state, action) => {
             state.isFetching = false;
             state.currentUser = action.payload;
             state.error = false;
+            state.isLoggedIn = true;
         },
         loginFailure: (state) => {
             state.isFetching = false;
             state.error = true;
+            state.isLoggedIn = false;
         },
         registerStart: (state) => {
             state.isFetching = true;
+            state.isLoggedIn = false;
         },
         registerSuccess: (state, action) => {
             state.isFetching = false;
             state.currentUser = action.payload;
+            state.isLoggedIn = false;
+            state.error = false;
         },
         registerFailure: (state) => {
             state.isFetching = false;
             state.error = true;
+            state.isLoggedIn = false;
         },
         logout: (state) => {
             state.currentUser = null;
+            state.isLoggedIn = false;
         },
 
         //UPDATE

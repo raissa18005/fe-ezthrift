@@ -21,10 +21,12 @@ import Seller from "./pages/Seller";
 import SellerEdit from "./pages/SellerEdit";
 import Help from "./pages/Help";
 import Notifikasi from "./pages/Notifikasi";
+import Donasi from "./pages/Donasi";
+import SearchPage from "./pages/SearchPage";
 
 const App = () => {
     const user = useSelector((state) => state.user.currentUser);
-    // console.log(user);
+    const isLogin = useSelector((state) => state.user.isLoggedIn);
 
     return (
         <Router>
@@ -38,27 +40,29 @@ const App = () => {
                 <Route path="/product/:id">
                     <Product />
                 </Route>
-
                 <Route path="/about">
                     <AboutUs />
                 </Route>
                 <Route path="/help">
                     <Help />
                 </Route>
-
                 <Route path="/success">
                     <Success />
                 </Route>
-                <Route path="/login">
-                    {user ? <Redirect to="/" /> : <Login />}
-                </Route>
-                <Route path="/register">
-                    {user ? <Redirect to="/" /> : <Register />}
+                <Route path="/results">
+                    <SearchPage />
                 </Route>
                 <Route path="/notifications">
                     <Notifikasi />
                 </Route>
-                {user ? (
+                <Route path="/login">
+                    {isLogin ? <Redirect to="/" /> : <Login />}
+                </Route>
+                <Route path="/register">
+                    {isLogin ? <Redirect to="/" /> : <Register />}
+                </Route>
+
+                {isLogin ? (
                     <>
                         <Route path="/cart">
                             <Cart />
@@ -69,14 +73,16 @@ const App = () => {
                         <Route path="/checkout/:id">
                             <Checkout />
                         </Route>
-
+                        <Route path="/donasi">
+                            <Donasi />
+                        </Route>
                         <Route path="/profile">
                             <Profile />
                         </Route>
                         <Route path="/history">
                             <Riwayat />
                         </Route>
-                        <Route path="/seller/:id">
+                        <Route path="/edit/:id">
                             <SellerEdit />
                         </Route>
                         <Route path="/seller">

@@ -9,18 +9,14 @@ import {
     Navbar as NavbarBS,
     Nav,
     NavDropdown,
-    Form,
-    FormControl,
-    Button,
     DropdownButton as Drpdb,
-    Dropdown,
     Container,
 } from "react-bootstrap";
 import styled from "styled-components";
 import logo from "../assets/images/Logo.svg";
 import { Badge } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { logout } from "../redux/userRedux";
 import { userRequest } from "../requestMethods";
 
@@ -69,28 +65,73 @@ const MenuItem = styled.div`
 
 const Navbar = () => {
     const [products, setProducts] = useState([]);
+    const [input, setInput] = useState({});
     // const quantity = useSelector((state) => state.cart.quantity);
     const user = useSelector((state) => state.user.currentUser);
+    const isLogin = useSelector((state) => state.user.isLoggedIn);
     const dispatch = useDispatch();
-    // const userId = user && user.others._id;
+    const history = useHistory();
+    const [orders, setOrders] = useState([]);
 
-    // useEffect(() => {
-    //     const getProducts = async () => {
-    //         try {
-    //             const res = await userRequest.get("/carts/find/" + userId);
-    //             setProducts(res.data);
-    //             // setTotal(res.data);
-    //         } catch (err) {}
-    //     };
-    //     getProducts();
-    // }, [userId]);
+    const userId = isLogin === true && user.others._id;
+
+    useEffect(() => {
+        if (isLogin === true) {
+            const getProducts = async () => {
+                try {
+                    const res = await userRequest.get("/carts/find/" + userId);
+                    setProducts(res.data);
+                    // setTotal(res.data);
+                } catch (err) {}
+            };
+            getProducts();
+        }
+    }, [userId, products.length]);
+
+    useEffect(() => {
+        if (isLogin === true) {
+            const getOrders = async () => {
+                try {
+                    const res = await userRequest.get(
+                        `http://localhost:5000/api/orders/find/${userId}`
+                    );
+                    setOrders(res.data);
+                } catch (err) {}
+            };
+            getOrders();
+        }
+    }, []);
+
+    let quantity = products.length;
+    let notifs = orders.length;
 
     // const quantity = products.length;
 
     const handleLogout = () => {
-        // Update cart
         dispatch(logout());
     };
+
+    const handleSearchInput = (e) => {
+        // this.setState({
+        //     searchText: e.target.value,
+        // });
+        setInput({
+            searchText: e.target.value,
+        });
+    };
+    const handleSearchSubmit = (e) => {
+        if (e.key === "Enter") {
+            history.push("/results", { searchText: input });
+        }
+    };
+
+    // console.log(input);
+
+    // const handleChange = (e) => {
+    //     setInputs((prev) => {
+    //         return { ...prev, [e.target.name]: e.target.value };
+    //     });
+    // };
 
     return (
         <div>
@@ -112,10 +153,10 @@ const Navbar = () => {
                             style={{ maxHeight: "200px" }}
                             navbarScroll
                         >
-                            <StyledNavLink href="/products/wanita">
+                            <StyledNavLink href="/products/Wanita">
                                 Wanita
                             </StyledNavLink>
-                            <StyledNavLink href="/products/pria">
+                            <StyledNavLink href="/products/Pria">
                                 Pria
                             </StyledNavLink>
                             <StyledNavLink href="/about">About</StyledNavLink>
@@ -141,10 +182,13 @@ const Navbar = () => {
                                     marginLeft: 5,
                                 }}
                             />
-                            <Input></Input>
+                            <Input
+                                onChange={handleSearchInput}
+                                onKeyPress={handleSearchSubmit}
+                            ></Input>
                         </SearchContainer>
                         <Nav>
-                            {!user ? (
+                            {isLogin === false ? (
                                 <>
                                     <StyledNavLink
                                         style={{ color: "#E07A5F" }}
@@ -170,7 +214,7 @@ const Navbar = () => {
                                         >
                                             <MenuItem>
                                                 <Badge
-                                                    // badgeContent={quantity}
+                                                    badgeContent={quantity}
                                                     color="primary"
                                                 >
                                                     <ShoppingCartOutlined />
@@ -186,7 +230,7 @@ const Navbar = () => {
                                         >
                                             <MenuItem>
                                                 <Badge
-                                                    badgeContent={4}
+                                                    badgeContent={notifs}
                                                     color="primary"
                                                 >
                                                     <Notifications />

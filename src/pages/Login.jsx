@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { login } from "../redux/apiCalls";
 import loginImage from "../assets/images/login-img.svg";
-import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { FaShippingFast } from "react-icons/fa";
+import {
+    FaBox,
+    FaCheckCircle,
+    FaReceipt,
+    FaShippingFast,
+} from "react-icons/fa";
 import { publicRequest, userRequest } from "../requestMethods";
 import { useSelector } from "react-redux";
 import NumberFormat from "react-number-format";
@@ -62,8 +67,30 @@ const OrderCard = ({ item }) => {
     return (
         <Container>
             <StatusContainer>
-                <FaShippingFast color="#E07A5F" />
-                <Status>Paket Telah Dikirim</Status>
+                {item.status === "pending" && (
+                    <>
+                        <FaReceipt color="#E07A5F" />
+                        <Status>Dalam pemeriksaan</Status>
+                    </>
+                )}
+                {item.status === "Terverifikasi" && (
+                    <>
+                        <FaBox color="#E07A5F" />
+                        <Status>Paket sedang dikemas</Status>
+                    </>
+                )}
+                {item.status === "sending" && (
+                    <>
+                        <FaShippingFast color="#E07A5F" />
+                        <Status>Paket telah dikirim</Status>
+                    </>
+                )}
+                {item.status === "received" && (
+                    <>
+                        <FaCheckCircle color="#E07A5F" />
+                        <Status>Paket telah diterima</Status>
+                    </>
+                )}
             </StatusContainer>
             {product.map((product) => (
                 <ProductContainer key={product._id}>
@@ -81,7 +108,7 @@ const OrderCard = ({ item }) => {
 
             <SubtotalContainer>
                 <SubtotalTitle></SubtotalTitle>
-                <SubtotalTitle>Subtotal</SubtotalTitle>
+                <SubtotalTitle>Total</SubtotalTitle>
                 <Subtotal>
                     <NumberFormat
                         value={item.amount}

@@ -8,10 +8,8 @@ import ovoname from "../assets/images/logo-ovo-2.png";
 import bca from "../assets/images/logo-bca.png";
 import mandiri from "../assets/images/logo-mandiri.png";
 import { useHistory, useLocation } from "react-router";
-import { publicRequest } from "../requestMethods";
+import { userRequest } from "../requestMethods";
 import NumberFormat from "react-number-format";
-import { regions } from "../regions";
-import { addOrder, updateStatusSold } from "../redux/apiCalls";
 import {
     getStorage,
     ref,
@@ -19,80 +17,45 @@ import {
     getDownloadURL,
 } from "firebase/storage";
 import app from "../firebase";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCartProducts, updateStatusSold } from "../redux/apiCalls";
 
 const Container = styled.div`
     margin-top: 59px;
 `;
 const Wrapper = styled.div`
+    width: 100%;
     padding: 20px;
     ${mobile({ padding: "10px" })}
     background-color: #F4F1DE;
 `;
 const Title = styled.h1`
     font-weight: 300;
-    font-size: px;
     text-align: center;
 `;
 const Top = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
+    justify-content: center;
+    /* padding: 0 20px; */
 `;
 
 const Bottom = styled.div`
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
     ${mobile({ flexDirection: "column" })}
 `;
-const Left = styled.div`
-    flex: 1;
-`;
+
 const Right = styled.div`
-    flex: 1;
+    width: 50%;
 `;
 
-const Form = styled.form`
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-`;
 const Label = styled.span`
     margin-left: 10px;
     font-weight: bold;
     font-size: 18px;
 `;
-
-const Input = styled.input`
-    flex: 1;
-    min-width: 40%;
-    margin: 8px 0;
-    padding: 10px;
-    border-radius: 10px;
-    border: 2px solid lightgray;
-    background-color: white;
-`;
-const InputWrap = styled.div`
-    padding: 20px 0;
-    display: flex;
-    align-items: center;
-`;
-
-const LabelWrap = styled.div`
-    flex: 1;
-`;
-
-const Select = styled.select`
-    flex: 3;
-    width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    border: 2px solid lightgray;
-`;
-const Option = styled.option``;
 
 const Hr = styled.hr`
     background-color: black;
@@ -101,7 +64,6 @@ const Hr = styled.hr`
 `;
 
 const Summary = styled.div`
-    flex: 1;
     width: 100%;
     border: 0.5px solid lightgray;
     background-color: white;
@@ -158,12 +120,23 @@ const PaymentLogo = styled.img`
     margin-right: 5px;
     flex: 1;
 `;
+
+const DonasiWrap = styled.div`
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+`;
+
 const InputFile = styled.input`
     margin: 10px;
 `;
 const Button = styled.button`
     margin: 10px;
     padding: 10px;
+    width: 50%;
     background-color: #c96549;
     cursor: pointer;
     font-weight: 500;
@@ -172,52 +145,45 @@ const Button = styled.button`
     }
 `;
 
-const Checkout = () => {
+const Donasi = () => {
     const location = useLocation();
     const id = location.pathname.split("/")[2];
-    const [product, setProduct] = useState([]);
-    const [productId, setProductId] = useState([]);
-    const [provinsi, setProvinsi] = useState("");
+    const [products, setProducts] = useState([]);
     const [inputs, setInputs] = useState({});
     const [file, setFile] = useState(null);
     const [address, setAddress] = useState({});
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.currentUser);
     const userId = user.others._id;
-    const { error } = useSelector((state) => state.order);
     const history = useHistory();
 
     useEffect(() => {
-        const getProduct = async () => {
+        const getProducts = async () => {
             try {
-                const res = await publicRequest.get("/products/find/" + id);
-                setProduct(res.data);
-                setProductId(res.data._id);
+                const res = await userRequest.get("/carts/find/" + userId);
+                setProducts(res.data);
+                // setTotal(res.data);
             } catch (err) {}
         };
-        getProduct();
-    }, [id]);
+        getProducts();
+    }, [userId]);
 
-    const handleProvinsi = (e) => {
-        setProvinsi(e.target.value);
+    const productId = products.map((p) => {
+        return p._id;
+    });
+
+    const subtotal = products.reduce((acc, curr) => {
+        return acc + curr.price;
+    }, 0);
+
+    const total = subtotal + 15000;
+
+    const updateStatus = async (id, statusProd) => {
+        try {
+            // update
+            const res = await userRequest.put(`/products/${id}`, statusProd);
+        } catch (err) {}
     };
-
-    const handleChange = (e) => {
-        setInputs((prev) => {
-            return { ...prev, [e.target.name]: e.target.value };
-        });
-    };
-    const handleAddress = (e) => {
-        setAddress((prev) => {
-            return { ...prev, [e.target.name]: e.target.value, provinsi };
-        });
-    };
-
-    const kota = provinsi
-        ? regions.filter((item) => item.provinsi === provinsi)[0].kota
-        : "";
-
-    const total = product.price + 15000;
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -255,20 +221,33 @@ const Checkout = () => {
                 // Handle successful uploads on complete
                 // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    const order = {
-                        ...inputs,
-
+                    const donasi = {
                         userId: userId,
                         img: downloadURL,
-                        address: address,
                         amount: total,
                         products: productId,
                     };
-                    addOrder(order, dispatch);
-                    if (error === false) {
-                        updateStatusSold(id, dispatch);
-                        history.push("/notifications");
-                    }
+                    const statusProd = {
+                        status: "sold",
+                    };
+
+                    const addDonasi = async () => {
+                        try {
+                            const res = await userRequest.post(
+                                `/donasi`,
+                                donasi
+                            );
+
+                            productId.map((p) => {
+                                updateStatusSold(p, dispatch);
+                            });
+
+                            deleteCartProducts(userId, dispatch);
+
+                            history.push("/notifications");
+                        } catch (err) {}
+                    };
+                    addDonasi();
                 });
             }
         );
@@ -279,99 +258,28 @@ const Checkout = () => {
             <Navbar />
             <Wrapper>
                 <Top>
-                    <Title>Penagihan dan Pengiriman</Title>
+                    <Title>Donasi</Title>
                 </Top>
                 <Bottom>
-                    <Left>
-                        <Form>
-                            <Label>Nama Lengkap</Label>
-                            <Input
-                                placeholder="Nama Lengkap"
-                                name="nama"
-                                type="text"
-                                onChange={handleChange}
-                            />
-                            <Label>Nomor Telepon</Label>
-                            <Input
-                                placeholder="Nomor Telepon"
-                                name="notelp"
-                                type="text"
-                                onChange={handleChange}
-                            />
-                            <Label>E-mail</Label>
-                            <Input
-                                placeholder="E-mail"
-                                name="email"
-                                type="text"
-                                onChange={handleChange}
-                            />
-                            <Label>Alamat Detail/Jalan</Label>
-                            <Input
-                                name="alamat"
-                                placeholder="Alamat Detail/Jalan"
-                                type="text"
-                                onChange={handleAddress}
-                            />
-                            <InputWrap>
-                                <LabelWrap>
-                                    <Label>Provinsi</Label>
-                                </LabelWrap>
-                                <Select
-                                    name="provinsi"
-                                    onChange={handleProvinsi}
-                                >
-                                    {regions.map((item) => (
-                                        <Option key={item.provinsi}>
-                                            {item.provinsi}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            </InputWrap>
-                            <InputWrap>
-                                <LabelWrap>
-                                    <Label>Kota</Label>
-                                </LabelWrap>
-                                <Select name="kota" onChange={handleAddress}>
-                                    {kota &&
-                                        kota.map((item) => (
-                                            <Option key={item}>{item}</Option>
-                                        ))}
-                                </Select>
-                            </InputWrap>
-                            {/* 
-                            <Label>Kecamatan/ Kelurahan</Label>
-                            <Input
-                                placeholder="Kecamatan/ Kelurahan"
-                                type="text"
-                            />
-                            <Label>Kode Pos</Label>
-                            <Input placeholder="Kode Pos" type="text" /> */}
-                            <Label>Upload bukti pembayaran (.jpg, .png)</Label>
-                            <InputFile
-                                onChange={(e) => setFile(e.target.files[0])}
-                                type="file"
-                                id="file"
-                            />
-                            <Button onClick={handleClick}>Order</Button>
-                        </Form>
-                    </Left>
                     <Right>
                         <Summary>
                             <SummaryTitle>Pesanan Anda</SummaryTitle>
                             <Hr />
-                            <SummaryItem>
-                                <SummaryItemText>
-                                    {product.title}
-                                </SummaryItemText>
-                                <SummaryItemPrice>
-                                    <NumberFormat
-                                        value={product.price}
-                                        displayType={"text"}
-                                        thousandSeparator={true}
-                                        prefix={"Rp"}
-                                    />
-                                </SummaryItemPrice>
-                            </SummaryItem>
+                            {products.map((product) => (
+                                <SummaryItem key={product._id}>
+                                    <SummaryItemText>
+                                        {product.title}
+                                    </SummaryItemText>
+                                    <SummaryItemPrice>
+                                        <NumberFormat
+                                            value={product.price}
+                                            displayType={"text"}
+                                            thousandSeparator={true}
+                                            prefix={"Rp"}
+                                        />
+                                    </SummaryItemPrice>
+                                </SummaryItem>
+                            ))}
 
                             <Hr />
                             <SummaryItem>
@@ -381,7 +289,7 @@ const Checkout = () => {
                                 <SummaryItemPrice>
                                     <b>
                                         <NumberFormat
-                                            value={product.price}
+                                            value={subtotal}
                                             displayType={"text"}
                                             thousandSeparator={true}
                                             prefix={"Rp"}
@@ -445,6 +353,17 @@ const Checkout = () => {
                                     </PaymentDesc>
                                 </PaymentInfo>
                             </PaymentWrap>
+                            <DonasiWrap>
+                                <Label>
+                                    Upload bukti pembayaran (.jpg, .png)
+                                </Label>
+                                <InputFile
+                                    onChange={(e) => setFile(e.target.files[0])}
+                                    type="file"
+                                    id="file"
+                                />
+                                <Button onClick={handleClick}>Donasi</Button>
+                            </DonasiWrap>
                         </Summary>
                     </Right>
                 </Bottom>
@@ -454,4 +373,4 @@ const Checkout = () => {
     );
 };
 
-export default Checkout;
+export default Donasi;

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { FaShippingFast } from "react-icons/fa";
 import SidebarNotifikasi from "../components/SidebarNotifikasi";
 import { userRequest } from "../requestMethods";
 import { useSelector } from "react-redux";

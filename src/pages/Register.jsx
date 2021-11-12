@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import { register } from "../redux/apiCalls";
 import { mobile } from "../responsive";
 import { isEmail } from "validator";
+import { useHistory } from "react-router";
 
 const Container = styled.div`
     width: 100vw;
@@ -100,17 +101,22 @@ const Link = styled.a`
     font-weight: bold;
     cursor: pointer;
 `;
+const Error = styled.span`
+    text-align: center;
+    color: red;
+`;
 
 const Register = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
-    const { isFetching, error } = useSelector((state) => state.user);
+    const history = useHistory();
+    const { error } = useSelector((state) => state.user);
 
     const handleClick = (e) => {
         e.preventDefault();
-        register(dispatch, { username, email, password });
+        register(dispatch, { username, email, password }, history);
     };
 
     return (
@@ -147,6 +153,9 @@ const Register = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                             <Button onClick={handleClick}>REGISTER</Button>
+                            {error && (
+                                <Error>Username/e-mail sudah terdaftar</Error>
+                            )}
                             <FormText>SUDAH MEMPUNYAI AKUN?</FormText>
                             <Link>LOGIN</Link>
                         </Form>
