@@ -49,9 +49,7 @@ const OrderCard = ({ item }) => {
     useEffect(() => {
         const getProducts = async () => {
             try {
-                const res = await publicRequest.get(
-                    "http://localhost:5000/api/products"
-                );
+                const res = await publicRequest.get("/products");
                 setProducts(res.data);
             } catch (err) {}
         };

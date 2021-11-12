@@ -92,9 +92,7 @@ const Navbar = () => {
         if (isLogin === true) {
             const getOrders = async () => {
                 try {
-                    const res = await userRequest.get(
-                        `http://localhost:5000/api/orders/find/${userId}`
-                    );
+                    const res = await userRequest.get(`/orders/find/${userId}`);
                     setOrders(res.data);
                 } catch (err) {}
             };
