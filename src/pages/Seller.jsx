@@ -198,70 +198,74 @@ const Seller = () => {
                                 </WhatsappLink>
                             </Card>
                             <ProductsTitle>Produk Saya</ProductsTitle>
-                            <Products>
-                                {products.map((product) => (
-                                    <div className="" key={product._id}>
-                                        <Product>
-                                            <ImgContainer>
-                                                <ProductImage
-                                                    src={product.img}
-                                                />
-                                            </ImgContainer>
-                                            <InfoContainer>
-                                                <Info>
-                                                    <Title>
-                                                        {product.title}
-                                                    </Title>
-                                                    <ProductDetail>
-                                                        Harga :{" "}
-                                                        <NumberFormat
-                                                            value={
-                                                                product.price
-                                                            }
-                                                            displayType={"text"}
-                                                            thousandSeparator={
-                                                                true
-                                                            }
-                                                            prefix={"Rp"}
-                                                        />
-                                                    </ProductDetail>
-                                                    <ProductDetail>
-                                                        Size : {product.size}
-                                                    </ProductDetail>
-                                                    <ProductDetail>
-                                                        Status :{" "}
-                                                        <Span
-                                                            status={
-                                                                product.status
-                                                            }
-                                                        >
-                                                            {product.status}
-                                                        </Span>
-                                                    </ProductDetail>
-                                                    <ProductDetail>
-                                                        Deskripsi :{" "}
-                                                        {product.desc}
-                                                    </ProductDetail>
-                                                </Info>
-                                                {product.status ===
-                                                    "pending" && (
-                                                    <ButtonContainer>
-                                                        <Link
-                                                            to={`/edit/${product._id}`}
-                                                        >
-                                                            <EditButton>
-                                                                Edit Harga
-                                                            </EditButton>
-                                                        </Link>
-                                                    </ButtonContainer>
-                                                )}
-                                            </InfoContainer>
-                                        </Product>
-                                        <Hr />
-                                    </div>
-                                ))}
-                            </Products>
-                            {products.length === 0 && (
+                            {products && products.length !== 0 ? (
+                                <Products>
+                                    {products.map((product) => (
+                                        <div className="" key={product._id}>
+                                            <Product>
+                                                <ImgContainer>
+                                                    <ProductImage
+                                                        src={product.img}
+                                                    />
+                                                </ImgContainer>
+                                                <InfoContainer>
+                                                    <Info>
+                                                        <Title>
+                                                            {product.title}
+                                                        </Title>
+                                                        <ProductDetail>
+                                                            Harga :{" "}
+                                                            <NumberFormat
+                                                                value={
+                                                                    product.price
+                                                                }
+                                                                displayType={
+                                                                    "text"
+                                                                }
+                                                                thousandSeparator={
+                                                                    true
+                                                                }
+                                                                prefix={"Rp"}
+                                                            />
+                                                        </ProductDetail>
+                                                        <ProductDetail>
+                                                            Size :{" "}
+                                                            {product.size}
+                                                        </ProductDetail>
+                                                        <ProductDetail>
+                                                            Status :{" "}
+                                                            <Span
+                                                                status={
+                                                                    product.status
+                                                                }
+                                                            >
+                                                                {product.status}
+                                                            </Span>
+                                                        </ProductDetail>
+                                                        <ProductDetail>
+                                                            Deskripsi :{" "}
+                                                            {product.desc}
+                                                        </ProductDetail>
+                                                    </Info>
+                                                    {product.status ===
+                                                        "pending" && (
+                                                        <ButtonContainer>
+                                                            <Link
+                                                                to={`/edit/${product._id}`}
+                                                            >
+                                                                <EditButton>
+                                                                    Edit Harga
+                                                                </EditButton>
+                                                            </Link>
+                                                        </ButtonContainer>
+                                                    )}
+                                                </InfoContainer>
+                                            </Product>
+                                            <Hr />
+                                        </div>
+                                    ))}
+                                </Products>
+                            ) : (
                                 <Products>
                                     Anda belum memiliki produk, silahkan
                                     menghubungi whatsapp kami melalui link di

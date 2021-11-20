@@ -19,6 +19,7 @@ const Wrapper = styled.div`
 const Main = styled.div`
     flex: 4;
     padding: 20px;
+    margin-bottom: 30px;
 `;
 
 const Title = styled.h3`
@@ -52,7 +53,6 @@ const Button = styled.button`
     color: white;
     font-weight: 600;
     cursor: pointer;
-    margin: 30px 0;
     border-radius: 50px;
 
     &:hover {
@@ -80,7 +80,6 @@ const ImgContainer = styled.div`
     justify-content: center;
 `;
 const Warn = styled.p`
-    padding: 10px 0;
     color: blue;
 `;
 const ProductImage = styled.img`

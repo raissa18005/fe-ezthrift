@@ -91,13 +91,13 @@ const Profile = () => {
     const handleClick = (e) => {
         e.preventDefault();
         const userinfo = {
+            provinsi,
             ...inputs,
-            provinsi: provinsi,
         };
         updateUser(id, userinfo, dispatch);
     };
 
-    // console.log(inputs);
+    console.log(inputs);
 
     const kota = provinsi
         ? regions.filter((item) => item.provinsi === provinsi)[0].kota
@@ -169,6 +169,14 @@ const Profile = () => {
                                 onChange={handleChange}
                             />
                             <Label>Provinsi</Label>
+                            {user.provinsi !== " " && (
+                                <>
+                                    <Select disabled>
+                                        <Option>{user.provinsi}</Option>
+                                    </Select>
+                                    <Label>Ubah Provinsi</Label>
+                                </>
+                            )}
                             <Select
                                 placeholder={
                                     user.provinsi === " "
@@ -185,6 +193,14 @@ const Profile = () => {
                                 ))}
                             </Select>
                             <Label>Kota</Label>
+                            {user.kota !== " " && (
+                                <>
+                                    <Select disabled>
+                                        <Option>{user.kota}</Option>
+                                    </Select>
+                                    <Label>Ubah Kota</Label>
+                                </>
+                            )}
                             <Select
                                 placeholder={
                                     user.kota === " " ? "Kota" : user.kota

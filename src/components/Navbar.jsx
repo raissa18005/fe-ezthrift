@@ -113,13 +113,18 @@ const Navbar = () => {
         // this.setState({
         //     searchText: e.target.value,
         // });
+
         setInput({
             searchText: e.target.value,
         });
     };
     const handleSearchSubmit = (e) => {
-        if (e.key === "Enter") {
-            history.push("/results", { searchText: input });
+        if (!e.target.value) {
+            return;
+        } else {
+            if (e.key === "Enter") {
+                history.push("/results", { searchText: input });
+            }
         }
     };
 

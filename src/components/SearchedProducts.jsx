@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { popularProducts } from "../data";
 import Product from "./Product";
-import axios from "axios";
 import { publicRequest } from "../requestMethods";
 
 const Container = styled.div`
@@ -17,7 +15,7 @@ const SearchedProducts = ({ searchText, filters, sort }) => {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
 
-    console.log(searchText);
+    // console.log(searchText);
 
     useEffect(() => {
         const getProducts = async () => {
@@ -65,7 +63,7 @@ const SearchedProducts = ({ searchText, filters, sort }) => {
         }
     }, [sort]);
 
-    console.log(filteredProducts);
+    // console.log(filteredProducts);
 
     return (
         <Container>

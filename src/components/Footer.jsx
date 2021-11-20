@@ -15,6 +15,7 @@ const Container = styled.div`
     display: flex;
     background-color: #3d405b;
     color: white;
+    margin-top: 30px;
 `;
 const Left = styled.div`
     flex: 1;

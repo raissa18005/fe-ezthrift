@@ -7,6 +7,7 @@ import { FaShippingFast } from "react-icons/fa";
 import OrderCard from "../components/OrderCard";
 import { userRequest } from "../requestMethods";
 import { useSelector } from "react-redux";
+import DonasiCard from "../components/DonasiCard";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -18,14 +19,17 @@ const Main = styled.div`
     flex: 4;
     padding: 20px;
 `;
-
+const Warn = styled.div`
+    padding: 10px 0;
+`;
 const WrapperProfile = styled.div``;
-const Title = styled.h1``;
+const Title = styled.h2``;
 
 const Riwayat = () => {
     const user = useSelector((state) => state.user.currentUser);
     const userId = user.others._id;
     const [orders, setOrders] = useState([]);
+    const [donasi, setDonasi] = useState([]);
 
     useEffect(() => {
         const getOrders = async () => {
@@ -37,6 +41,16 @@ const Riwayat = () => {
         getOrders();
     }, []);
 
+    useEffect(() => {
+        const getDonasi = async () => {
+            try {
+                const res = await userRequest.get(`/donasi/find/${userId}`);
+                setDonasi(res.data);
+            } catch (err) {}
+        };
+        getDonasi();
+    }, []);
+
     return (
         <Container>
             <Navbar />
@@ -44,11 +58,25 @@ const Riwayat = () => {
                 <SidebarProfile />
                 <Main>
                     <Title>Riwayat Belanja</Title>
-                    <WrapperProfile>
-                        {orders.map((item) => (
-                            <OrderCard item={item} key={item._id} />
-                        ))}
-                    </WrapperProfile>
+                    {orders ? (
+                        <WrapperProfile>
+                            {orders.map((item) => (
+                                <OrderCard item={item} key={item._id} />
+                            ))}
+                        </WrapperProfile>
+                    ) : (
+                        <Warn>Anda belum memiliki pesanan</Warn>
+                    )}
+                    <Title>Riwayat Donasi</Title>
+                    {donasi ? (
+                        <WrapperProfile>
+                            {donasi.map((item) => (
+                                <DonasiCard item={item} key={item._id} />
+                            ))}
+                        </WrapperProfile>
+                    ) : (
+                        <Warn>Anda belum memiliki donasi</Warn>
+                    )}
                 </Main>
             </Wrapper>
             <Footer />

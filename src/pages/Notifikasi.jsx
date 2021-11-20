@@ -6,6 +6,7 @@ import SidebarNotifikasi from "../components/SidebarNotifikasi";
 import { userRequest } from "../requestMethods";
 import { useSelector } from "react-redux";
 import OrderCard from "../components/OrderCard";
+import DonasiCard from "../components/DonasiCard";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -17,45 +18,18 @@ const Main = styled.div`
     flex: 4;
     padding: 20px;
 `;
-
-const StatusContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-`;
-const Status = styled.div`
-    margin-left: 5px;
-`;
-const ProductsHistory = styled.div`
-    background-color: #f4f1de;
-    border-radius: 20px;
-    padding: 15px 20px;
-    width: 70%;
-    margin: 10px 0;
-`;
-const ProductContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin: 3px 0;
-`;
-const ProductTitle = styled.div``;
-const ProductPrice = styled.div``;
-const SubtotalContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    font-weight: 700;
-    margin: 3px 0;
-`;
-const SubtotalTitle = styled.div``;
-const Subtotal = styled.div``;
+const Title = styled.h2``;
 
 const WrapperProfile = styled.div``;
-const Title = styled.h1``;
+const Warn = styled.div`
+    padding: 10px 0;
+`;
 
 const Notifikasi = () => {
     const user = useSelector((state) => state.user.currentUser);
     const userId = user.others._id;
     const [orders, setOrders] = useState([]);
+    const [donasi, setDonasi] = useState([]);
 
     useEffect(() => {
         const getOrders = async () => {
@@ -66,8 +40,15 @@ const Notifikasi = () => {
         };
         getOrders();
     }, []);
-
-    // console.log(orders);
+    useEffect(() => {
+        const getDonasi = async () => {
+            try {
+                const res = await userRequest.get(`/donasi/find/${userId}`);
+                setDonasi(res.data);
+            } catch (err) {}
+        };
+        getDonasi();
+    }, []);
 
     return (
         <Container>
@@ -75,11 +56,26 @@ const Notifikasi = () => {
             <Wrapper>
                 <SidebarNotifikasi />
                 <Main>
-                    <WrapperProfile>
-                        {orders.map((item) => (
-                            <OrderCard item={item} key={item._id} />
-                        ))}
-                    </WrapperProfile>
+                    <Title>Pesanan</Title>
+                    {orders ? (
+                        <WrapperProfile>
+                            {orders.map((item) => (
+                                <OrderCard item={item} key={item._id} />
+                            ))}
+                        </WrapperProfile>
+                    ) : (
+                        <Warn>Anda belum memiliki pesanan</Warn>
+                    )}
+                    <Title>Donasi</Title>
+                    {donasi ? (
+                        <WrapperProfile>
+                            {donasi.map((item) => (
+                                <DonasiCard item={item} key={item._id} />
+                            ))}
+                        </WrapperProfile>
+                    ) : (
+                        <Warn>Anda belum memiliki donasi</Warn>
+                    )}
                 </Main>
             </Wrapper>
             <Footer />

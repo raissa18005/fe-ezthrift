@@ -5,8 +5,9 @@ import registerImage from "../assets/images/register-img.svg";
 import Navbar from "../components/Navbar";
 import { register } from "../redux/apiCalls";
 import { mobile } from "../responsive";
-import { isEmail } from "validator";
 import { useHistory } from "react-router";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Container = styled.div`
     width: 100vw;
@@ -102,22 +103,57 @@ const Link = styled.a`
     cursor: pointer;
 `;
 const Error = styled.span`
-    text-align: center;
+    margin-left: 10px;
+    font-size: 14px;
     color: red;
 `;
 
 const Register = () => {
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    // const [username, setUsername] = useState("");
+    // const [email, setEmail] = useState("");
+    // const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const history = useHistory();
-    const { error } = useSelector((state) => state.user);
+    const { isFetching, error } = useSelector((state) => state.user);
 
-    const handleClick = (e) => {
-        e.preventDefault();
-        register(dispatch, { username, email, password }, history);
-    };
+    // const handleClick = (e) => {
+    //     e.preventDefault();
+    //     register(dispatch, { username, email, password }, history);
+    // };
+
+    const validate = Yup.object({
+        username: Yup.string()
+            .max(15, "Username maksimal 15 karakter ")
+            .required("Username harus diisi"),
+        email: Yup.string()
+            .email("Email tidak valid")
+            .required("Email harus diisi"),
+        password: Yup.string()
+            // .min(6, "Password harus lebih dari 6 karakter")
+            .matches(
+                /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/,
+                "Password Minimal 8 karakter, Satu huruf besar, Satu huruf kecil, Satu angka dan satu simbol"
+            )
+            .required("Password harus diisi"),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref("password"), null], "Password harus sama")
+            .required("Konfirmasi password harus diisi"),
+    });
+
+    const { handleSubmit, handleChange, values, touched, errors, handleBlur } =
+        useFormik({
+            initialValues: {
+                username: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+            },
+            validationSchema: validate,
+            onSubmit: (values) => {
+                console.log(values);
+                register(dispatch, values, history);
+            },
+        });
 
     return (
         <Container>
@@ -129,30 +165,83 @@ const Register = () => {
                 <Right>
                     <Wrapper>
                         <Title>REGISTER</Title>
-                        <Form>
+                        <Form onSubmit={handleSubmit}>
                             {/* <Label>Nama Lengkap</Label>
                             <Input placeholder="Nama Lengkap" type="text" onChange={(e) => setName(e.target.value)}/> */}
                             <Label>Username</Label>
                             <Input
-                                placeholder="Username"
+                                value={values.username}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                id="username"
                                 type="text"
-                                onChange={(e) => setUsername(e.target.value)}
+                                name="username"
+                                className={`${
+                                    touched.username &&
+                                    errors.username &&
+                                    `invalid`
+                                }`}
                             />
-                            {/* <Label>Nomor Telepon</Label>
-                            <Input placeholder="Nomor Telepon" type="text" onChange={(e) => setPhone(e.target.value)}/> */}
-                            <Label>E-mail</Label>
+                            {touched.username && errors.username ? (
+                                <Error className="error">
+                                    {errors.username}
+                                </Error>
+                            ) : null}
+                            <Label>Email</Label>
                             <Input
-                                placeholder="E-mail"
-                                type="text"
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={values.email}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                id="email"
+                                type="email"
+                                name="email"
+                                className={`${
+                                    touched.email && errors.email && `invalid`
+                                }`}
                             />
+                            {touched.email && errors.email ? (
+                                <Error className="error">{errors.email}</Error>
+                            ) : null}
                             <Label>Password</Label>
                             <Input
-                                placeholder="Password"
+                                value={values.password}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                name="password"
+                                id="password"
                                 type="password"
-                                onChange={(e) => setPassword(e.target.value)}
+                                className={`${
+                                    touched.password &&
+                                    errors.password &&
+                                    `invalid`
+                                }`}
                             />
-                            <Button onClick={handleClick}>REGISTER</Button>
+                            {touched.password && errors.password ? (
+                                <Error className="error">
+                                    {errors.password}
+                                </Error>
+                            ) : null}
+                            <Label>Konfirmasi Password</Label>
+                            <Input
+                                value={values.confirmPassword}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                name="confirmPassword"
+                                id="confirmPassword"
+                                type="password"
+                                className={`${
+                                    touched.confirmPassword &&
+                                    errors.confirmPassword &&
+                                    `invalid`
+                                }`}
+                            />
+                            {touched.confirmPassword &&
+                            errors.confirmPassword ? (
+                                <Error>{errors.confirmPassword}</Error>
+                            ) : null}
+                            <Button type="submit" disabled={isFetching}>
+                                REGISTER
+                            </Button>
                             {error && (
                                 <Error>Username/e-mail sudah terdaftar</Error>
                             )}
