@@ -72,7 +72,8 @@ const Input = styled.input`
     margin: 5px 0;
     padding: 10px;
     border-radius: 50px;
-    border: 2px solid #81b29a;
+    border: ${(props) =>
+        props.invalid === "invalid" ? "1px solid red" : "2px solid #81b29a"};
     background-color: #f4f1de;
 `;
 const Button = styled.button`
@@ -176,7 +177,7 @@ const Register = () => {
                                 id="username"
                                 type="text"
                                 name="username"
-                                className={`${
+                                invalid={`${
                                     touched.username &&
                                     errors.username &&
                                     `invalid`
@@ -195,7 +196,7 @@ const Register = () => {
                                 id="email"
                                 type="email"
                                 name="email"
-                                className={`${
+                                invalid={`${
                                     touched.email && errors.email && `invalid`
                                 }`}
                             />
@@ -210,7 +211,7 @@ const Register = () => {
                                 name="password"
                                 id="password"
                                 type="password"
-                                className={`${
+                                invalid={`${
                                     touched.password &&
                                     errors.password &&
                                     `invalid`
@@ -229,7 +230,7 @@ const Register = () => {
                                 name="confirmPassword"
                                 id="confirmPassword"
                                 type="password"
-                                className={`${
+                                invalid={`${
                                     touched.confirmPassword &&
                                     errors.confirmPassword &&
                                     `invalid`

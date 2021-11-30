@@ -46,10 +46,12 @@ const SearchContainer = styled.div`
     padding: 4px;
     border-radius: 20px;
     margin-right: 15px;
+    transition: all 1s;
 `;
 const Input = styled.input`
     border: none;
     width: 85%;
+    padding-left: 5px;
 `;
 
 const LoginMenu = styled.div`
@@ -186,6 +188,7 @@ const Navbar = () => {
                                 }}
                             />
                             <Input
+                                placeholder="Cari disini"
                                 onChange={handleSearchInput}
                                 onKeyPress={handleSearchSubmit}
                             ></Input>

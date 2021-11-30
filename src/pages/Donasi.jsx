@@ -19,6 +19,8 @@ import {
 import app from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCartProducts, updateStatusSold } from "../redux/apiCalls";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -121,7 +123,7 @@ const PaymentLogo = styled.img`
     flex: 1;
 `;
 
-const DonasiWrap = styled.div`
+const Form = styled.form`
     margin: 20px 0;
     display: flex;
     flex-direction: column;
@@ -132,6 +134,7 @@ const DonasiWrap = styled.div`
 
 const InputFile = styled.input`
     margin: 10px;
+    padding-left: 20px;
 `;
 const Button = styled.button`
     margin: 10px;
@@ -145,6 +148,12 @@ const Button = styled.button`
     }
 `;
 
+const Error = styled.span`
+    margin-left: 10px;
+    font-size: 14px;
+    color: red;
+`;
+
 const Donasi = () => {
     const location = useLocation();
     const id = location.pathname.split("/")[2];
@@ -156,6 +165,86 @@ const Donasi = () => {
     const user = useSelector((state) => state.user.currentUser);
     const userId = user.others._id;
     const history = useHistory();
+
+    const validate = Yup.object({
+        file: Yup.mixed().required("File harus diisi"),
+    });
+
+    const {
+        handleSubmit,
+        handleChange,
+        values,
+        touched,
+        errors,
+        handleBlur,
+        setFieldValue,
+    } = useFormik({
+        initialValues: {
+            file: null,
+        },
+        validationSchema: validate,
+        onSubmit: (values) => {
+            const fileName = new Date().getTime() + values.file.name;
+            const storage = getStorage(app);
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, values.file);
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    const progress =
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log("Upload is " + progress + "% done");
+                    switch (snapshot.state) {
+                        case "paused":
+                            console.log("Upload is paused");
+                            break;
+                        case "running":
+                            console.log("Upload is running");
+                            break;
+                        default:
+                    }
+                },
+                (error) => {
+                    // Handle unsuccessful uploads
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then(
+                        (downloadURL) => {
+                            const donasi = {
+                                userId: userId,
+                                img: downloadURL,
+                                amount: total,
+                                products: productId,
+                            };
+                            const statusProd = {
+                                status: "sold",
+                            };
+
+                            const addDonasi = async () => {
+                                try {
+                                    const res = await userRequest.post(
+                                        `/donasi`,
+                                        donasi
+                                    );
+
+                                    productId.map((p) => {
+                                        updateStatusSold(p, dispatch);
+                                    });
+
+                                    deleteCartProducts(userId, dispatch);
+
+                                    history.push("/notifications");
+                                } catch (err) {}
+                            };
+                            addDonasi();
+                        }
+                    );
+                }
+            );
+        },
+    });
 
     useEffect(() => {
         const getProducts = async () => {
@@ -355,17 +444,25 @@ const Donasi = () => {
                                     </PaymentDesc>
                                 </PaymentInfo>
                             </PaymentWrap>
-                            <DonasiWrap>
+                            <Form onSubmit={handleSubmit}>
                                 <Label>
                                     Upload bukti pembayaran (.jpg, .png)
                                 </Label>
                                 <InputFile
-                                    onChange={(e) => setFile(e.target.files[0])}
+                                    onChange={(e) =>
+                                        setFieldValue("file", e.target.files[0])
+                                    }
+                                    onBlur={handleBlur}
                                     type="file"
                                     id="file"
                                 />
-                                <Button onClick={handleClick}>Donasi</Button>
-                            </DonasiWrap>
+                                {touched.file && errors.file ? (
+                                    <Error className="error">
+                                        {errors.file}
+                                    </Error>
+                                ) : null}
+                                <Button type="submit">Donasi</Button>
+                            </Form>
                         </Summary>
                     </Right>
                 </Bottom>

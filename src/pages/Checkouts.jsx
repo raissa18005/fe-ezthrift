@@ -23,8 +23,9 @@ import {
     getDownloadURL,
 } from "firebase/storage";
 import app from "../firebase";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Container = styled.div`
     margin-top: 59px;
@@ -175,6 +176,11 @@ const Button = styled.button`
         background-color: #e07a5f;
     }
 `;
+const Error = styled.span`
+    margin-left: 10px;
+    font-size: 14px;
+    color: red;
+`;
 
 const Checkouts = () => {
     const location = useLocation();
@@ -187,8 +193,99 @@ const Checkouts = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.currentUser);
     const userId = user.others._id;
-    const { error } = useSelector((state) => state.order);
+    const { error, isFetching } = useSelector((state) => state.order);
     const history = useHistory();
+
+    const validate = Yup.object({
+        nama: Yup.string().required("Nama harus diisi"),
+        notelp: Yup.string().required("Nomor telepon harus diisi"),
+        email: Yup.string()
+            .email("Email tidak valid")
+            .required("Email harus diisi"),
+        alamat: Yup.string().required("Alamat harus diisi"),
+        provinsi: Yup.string().required("Provinsi harus diisi"),
+        kota: Yup.string().required("Kota harus diisi"),
+        file: Yup.mixed().required("File harus diisi"),
+    });
+
+    const {
+        handleSubmit,
+        handleChange,
+        values,
+        touched,
+        errors,
+        handleBlur,
+        setFieldValue,
+    } = useFormik({
+        initialValues: {
+            nama: "",
+            notelp: "",
+            email: "",
+            alamat: "",
+            provinsi: "",
+            kota: "",
+            file: null,
+        },
+        validationSchema: validate,
+        onSubmit: (values) => {
+            const fileName = new Date().getTime() + values.file.name;
+            const storage = getStorage(app);
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, values.file);
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    const progress =
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log("Upload is " + progress + "% done");
+                    switch (snapshot.state) {
+                        case "paused":
+                            console.log("Upload is paused");
+                            break;
+                        case "running":
+                            console.log("Upload is running");
+                            break;
+                        default:
+                    }
+                },
+                (error) => {
+                    // Handle unsuccessful uploads
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then(
+                        (downloadURL) => {
+                            const address = {
+                                alamat: values.alamat,
+                                provinsi: values.provinsi,
+                                kota: values.kota,
+                            };
+
+                            const order = {
+                                nama: values.nama,
+                                email: values.email,
+                                notelp: values.notelp,
+                                userId: userId,
+                                img: downloadURL,
+                                address: address,
+                                amount: total,
+                                products: productId,
+                            };
+                            addOrder(order, dispatch);
+                            if (error === false) {
+                                productId.map((p) => {
+                                    updateStatusSold(p, dispatch);
+                                });
+                                deleteCartProducts(userId, dispatch);
+                                history.push("/notifications");
+                            }
+                        }
+                    );
+                }
+            );
+        },
+    });
 
     useEffect(() => {
         const getProducts = async () => {
@@ -201,27 +298,14 @@ const Checkouts = () => {
         getProducts();
     }, [userId]);
 
+    console.log(file);
+
     const productId = products.map((p) => {
         return p._id;
     });
 
-    const handleProvinsi = (e) => {
-        setProvinsi(e.target.value);
-    };
-
-    const handleChange = (e) => {
-        setInputs((prev) => {
-            return { ...prev, [e.target.name]: e.target.value };
-        });
-    };
-    const handleAddress = (e) => {
-        setAddress((prev) => {
-            return { ...prev, [e.target.name]: e.target.value, provinsi };
-        });
-    };
-
-    const kota = provinsi
-        ? regions.filter((item) => item.provinsi === provinsi)[0].kota
+    const kota = values.provinsi
+        ? regions.filter((item) => item.provinsi === values.provinsi)[0].kota
         : "";
 
     const subtotal = products.reduce((acc, curr) => {
@@ -296,42 +380,59 @@ const Checkouts = () => {
                 </Top>
                 <Bottom>
                     <Left>
-                        <Form>
+                        <Form onSubmit={handleSubmit}>
                             <Label>Nama Lengkap</Label>
                             <Input
                                 placeholder="Nama Lengkap"
                                 name="nama"
                                 type="text"
+                                onBlur={handleBlur}
                                 onChange={handleChange}
                             />
+                            {touched.nama && errors.nama ? (
+                                <Error className="error">{errors.nama}</Error>
+                            ) : null}
                             <Label>Nomor Telepon</Label>
                             <Input
                                 placeholder="Nomor Telepon"
                                 name="notelp"
                                 type="text"
+                                onBlur={handleBlur}
                                 onChange={handleChange}
                             />
+                            {touched.notelp && errors.notelp ? (
+                                <Error className="error">{errors.notelp}</Error>
+                            ) : null}
                             <Label>E-mail</Label>
                             <Input
                                 placeholder="E-mail"
                                 name="email"
                                 type="text"
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                             />
+                            {touched.email && errors.email ? (
+                                <Error className="error">{errors.email}</Error>
+                            ) : null}
                             <Label>Alamat Detail/Jalan</Label>
                             <Input
                                 name="alamat"
                                 placeholder="Alamat Detail/Jalan"
                                 type="text"
-                                onChange={handleAddress}
+                                onBlur={handleBlur}
+                                onChange={handleChange}
                             />
+                            {touched.alamat && errors.alamat ? (
+                                <Error className="error">{errors.alamat}</Error>
+                            ) : null}
                             <InputWrap>
                                 <LabelWrap>
                                     <Label>Provinsi</Label>
                                 </LabelWrap>
                                 <Select
                                     name="provinsi"
-                                    onChange={handleProvinsi}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
                                 >
                                     {regions.map((item) => (
                                         <Option key={item.provinsi}>
@@ -340,17 +441,29 @@ const Checkouts = () => {
                                     ))}
                                 </Select>
                             </InputWrap>
+                            {touched.provinsi && errors.provinsi ? (
+                                <Error className="error">
+                                    {errors.provinsi}
+                                </Error>
+                            ) : null}
                             <InputWrap>
                                 <LabelWrap>
                                     <Label>Kota</Label>
                                 </LabelWrap>
-                                <Select name="kota" onChange={handleAddress}>
+                                <Select
+                                    name="kota"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                >
                                     {kota &&
                                         kota.map((item) => (
                                             <Option key={item}>{item}</Option>
                                         ))}
                                 </Select>
                             </InputWrap>
+                            {touched.kota && errors.kota ? (
+                                <Error className="error">{errors.kota}</Error>
+                            ) : null}
                             {/* 
                             <Label>Kecamatan/ Kelurahan</Label>
                             <Input
@@ -361,11 +474,19 @@ const Checkouts = () => {
                             <Input placeholder="Kode Pos" type="text" /> */}
                             <Label>Upload bukti pembayaran (.jpg, .png)</Label>
                             <InputFile
-                                onChange={(e) => setFile(e.target.files[0])}
+                                onChange={(e) =>
+                                    setFieldValue("file", e.target.files[0])
+                                }
+                                onBlur={handleBlur}
                                 type="file"
                                 id="file"
                             />
-                            <Button onClick={handleClick}>Order</Button>
+                            {touched.file && errors.file ? (
+                                <Error className="error">{errors.file}</Error>
+                            ) : null}
+                            <Button type="submit" disabled={isFetching}>
+                                Order
+                            </Button>
                         </Form>
                     </Left>
                     <Right>
