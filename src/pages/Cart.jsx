@@ -230,12 +230,16 @@ const Cart = () => {
             <Wrapper>
                 <Title>KERANJANG BELANJA</Title>
                 <Top>
-                    <TopButton>CONTINUE SHOPPING</TopButton>
+                    <Link to="/">
+                        <TopButton>LANJUT BELANJA</TopButton>
+                    </Link>
                     <TopTexts>
                         <TopText>Keranjang Belanja(2)</TopText>
                         <TopText>Your Wishlist(0)</TopText>
                     </TopTexts>
-                    <TopButton type="filled">CHECKOUT NOW</TopButton>
+                    <Link to="/checkouts">
+                        <TopButton type="filled">CHECKOUT NOW</TopButton>
+                    </Link>
                 </Top>
                 <Bottom>
                     <Info>

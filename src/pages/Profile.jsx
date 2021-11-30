@@ -72,6 +72,7 @@ const Profile = () => {
             ? state.user.currentUser.others
             : state.user.currentUser
     );
+    const { error } = useSelector((state) => state.user);
 
     // console.log(user);
 
