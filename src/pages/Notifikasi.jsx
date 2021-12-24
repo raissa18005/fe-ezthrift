@@ -50,6 +50,8 @@ const Notifikasi = () => {
         getDonasi();
     }, []);
 
+    console.log(orders.length);
+
     return (
         <Container>
             <Navbar />
@@ -57,7 +59,7 @@ const Notifikasi = () => {
                 <SidebarNotifikasi />
                 <Main>
                     <Title>Pesanan</Title>
-                    {orders ? (
+                    {orders.length > 0 ? (
                         <WrapperProfile>
                             {orders.map((item) => (
                                 <OrderCard item={item} key={item._id} />
@@ -67,7 +69,7 @@ const Notifikasi = () => {
                         <Warn>Anda belum memiliki pesanan</Warn>
                     )}
                     <Title>Donasi</Title>
-                    {donasi ? (
+                    {donasi.length > 0 ? (
                         <WrapperProfile>
                             {donasi.map((item) => (
                                 <DonasiCard item={item} key={item._id} />

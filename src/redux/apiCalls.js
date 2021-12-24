@@ -66,6 +66,7 @@ export const updateUser = async (id, userinfo, dispatch) => {
         const res = await userRequest.put(`/users/${id}`, userinfo);
         dispatch(updateUserSuccess(res.data));
         window.location.reload();
+        console.log(res.data);
     } catch (err) {
         dispatch(updateUserFailure());
     }

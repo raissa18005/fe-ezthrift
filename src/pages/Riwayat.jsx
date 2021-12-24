@@ -58,7 +58,7 @@ const Riwayat = () => {
                 <SidebarProfile />
                 <Main>
                     <Title>Riwayat Belanja</Title>
-                    {orders ? (
+                    {orders > 0 ? (
                         <WrapperProfile>
                             {orders.map((item) => (
                                 <OrderCard item={item} key={item._id} />
@@ -68,7 +68,7 @@ const Riwayat = () => {
                         <Warn>Anda belum memiliki pesanan</Warn>
                     )}
                     <Title>Riwayat Donasi</Title>
-                    {donasi ? (
+                    {donasi > 0 ? (
                         <WrapperProfile>
                             {donasi.map((item) => (
                                 <DonasiCard item={item} key={item._id} />

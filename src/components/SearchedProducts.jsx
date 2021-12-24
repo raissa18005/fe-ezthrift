@@ -10,6 +10,12 @@ const Container = styled.div`
     justify-content: space-between;
 `;
 
+const NotFound = styled.div`
+    width: 100%;
+    padding: 50px 0;
+    text-align: center;
+`;
+
 const SearchedProducts = ({ searchText, filters, sort }) => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -67,6 +73,11 @@ const SearchedProducts = ({ searchText, filters, sort }) => {
 
     return (
         <Container>
+            {searchResults.length <= 0 && (
+                <NotFound>
+                    <h2>Hasil Tidak Ditemukan</h2>
+                </NotFound>
+            )}
             {filteredProducts.map((item) => (
                 <Product item={item} key={item._id} />
             ))}

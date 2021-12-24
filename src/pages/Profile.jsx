@@ -6,12 +6,27 @@ import Navbar from "../components/Navbar";
 import SidebarProfile from "../components/SidebarProfile";
 import { updateUser } from "../redux/apiCalls";
 import { regions } from "../regions";
+import {
+    getStorage,
+    ref,
+    uploadBytesResumable,
+    getDownloadURL,
+} from "firebase/storage";
+import app from "../firebase";
+import validator from "validator";
+import isEmail from "validator/lib/isEmail";
 
 const Container = styled.div`
     margin-top: 59px;
 `;
 const Wrapper = styled.div`
     display: flex;
+`;
+const WrapperKtp = styled.div`
+    padding: 10px;
+    background-color: whitesmoke;
+    width: 20%;
+    margin-bottom: 10px;
 `;
 const Main = styled.div`
     flex: 4;
@@ -60,6 +75,11 @@ const Select = styled.select`
     border: 1px solid gray;
     margin-bottom: 10px;
 `;
+
+const Error = styled.span`
+    color: red;
+    padding-bottom: 10px;
+`;
 const Option = styled.option``;
 
 const WrapperProfile = styled.div``;
@@ -67,6 +87,8 @@ const Title = styled.h1``;
 const Profile = () => {
     const [provinsi, setProvinsi] = useState("");
     const [inputs, setInputs] = useState({});
+    const [file, setFile] = useState(null);
+    const [isMail, setIsMail] = useState(false);
     const user = useSelector((state) =>
         state.user.currentUser.others
             ? state.user.currentUser.others
@@ -85,17 +107,76 @@ const Profile = () => {
 
     const handleChange = (e) => {
         setInputs((prev) => {
-            return { ...prev, [e.target.name]: e.target.value };
+            if (e.target.value) {
+                return { ...prev, [e.target.name]: e.target.value };
+            }
         });
+        if (e.target.name === "email") {
+            setIsMail(validator.isEmail(e.target.value));
+        }
+        if (!inputs?.email) {
+            console.log("tidak ada email");
+        }
     };
 
     const handleClick = (e) => {
         e.preventDefault();
-        const userinfo = {
-            provinsi,
-            ...inputs,
-        };
-        updateUser(id, userinfo, dispatch);
+        if (isMail || !inputs?.email) {
+            if (file) {
+                const fileName = new Date().getTime() + file.name;
+                const storage = getStorage(app);
+                const storageRef = ref(storage, fileName);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+
+                // Register three observers:
+                // 1. 'state_changed' observer, called any time the state changes
+                // 2. Error observer, called on failure
+                // 3. Completion observer, called on successful completion
+                uploadTask.on(
+                    "state_changed",
+                    (snapshot) => {
+                        // Observe state change events such as progress, pause, and resume
+                        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                        const progress =
+                            (snapshot.bytesTransferred / snapshot.totalBytes) *
+                            100;
+                        console.log("Upload is " + progress + "% done");
+                        switch (snapshot.state) {
+                            case "paused":
+                                console.log("Upload is paused");
+                                break;
+                            case "running":
+                                console.log("Upload is running");
+                                break;
+                            default:
+                        }
+                    },
+                    (error) => {
+                        // Handle unsuccessful uploads
+                    },
+                    () => {
+                        // Handle successful uploads on complete
+                        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                        getDownloadURL(uploadTask.snapshot.ref).then(
+                            (downloadURL) => {
+                                const userinfo = {
+                                    provinsi,
+                                    ...inputs,
+                                    ktp: downloadURL,
+                                };
+                                updateUser(id, userinfo, dispatch);
+                            }
+                        );
+                    }
+                );
+            } else {
+                const userinfo = {
+                    provinsi,
+                    ...inputs,
+                };
+                updateUser(id, userinfo, dispatch);
+            }
+        }
     };
 
     console.log(inputs);
@@ -142,6 +223,10 @@ const Profile = () => {
                                 name="email"
                                 onChange={handleChange}
                             />
+                            {!isMail && inputs?.email && (
+                                <Error>Email tidak valid</Error>
+                            )}
+
                             <Label>Nomor Telepon</Label>
                             <Input
                                 placeholder={
@@ -168,6 +253,30 @@ const Profile = () => {
                                 type="text"
                                 name="alamat"
                                 onChange={handleChange}
+                            />
+                            {user.ktp !== " " && (
+                                <>
+                                    <Label>Lihat KTP</Label>
+                                    <WrapperKtp>
+                                        <a href={user.ktp}>
+                                            Klik untuk lihat KTP
+                                        </a>
+                                    </WrapperKtp>
+                                </>
+                            )}
+
+                            {user.ktp !== " " ? (
+                                <>
+                                    <Label>Ubah KTP</Label>
+                                </>
+                            ) : (
+                                <Label>Upload KTP</Label>
+                            )}
+
+                            <Input
+                                type="file"
+                                id="file"
+                                onChange={(e) => setFile(e.target.files[0])}
                             />
                             <Label>Provinsi</Label>
                             {user.provinsi !== " " && (

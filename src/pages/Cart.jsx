@@ -234,7 +234,7 @@ const Cart = () => {
                         <TopButton>LANJUT BELANJA</TopButton>
                     </Link>
                     <TopTexts>
-                        <TopText>Keranjang Belanja(2)</TopText>
+                        <TopText>Keranjang Belanja({products.length})</TopText>
                         <TopText>Your Wishlist(0)</TopText>
                     </TopTexts>
                     <Link to="/checkouts">

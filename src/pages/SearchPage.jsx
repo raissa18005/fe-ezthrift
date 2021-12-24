@@ -132,6 +132,7 @@ const SearchPage = () => {
                             </Select>
                         </Filter>
                     </FilterContainer>
+
                     <SearchedProducts
                         searchText={searchText}
                         filters={filters}
